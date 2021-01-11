@@ -5,8 +5,9 @@ namespace Richx
     public class RichCell
     {
         public RichRow Row { get; private set; }
+        public int Index { get; private set; }
+
         public int RowIndex => Row.Index;
-        public int Index { get; internal set; }
         public RichStyle Style { get; set; } = new RichStyle();
         public object _innerValue;
 
@@ -25,11 +26,11 @@ namespace Richx
                 else return false;
             }
         }
-        public bool Ignored { get; internal set; }
-        public int RowSpan { get; internal set; } = 1;
-        public int RowOffset { get; internal set; }
-        public int ColSpan { get; internal set; } = 1;
-        public int ColOffset { get; internal set; }
+        public bool Ignored { get; set; }
+        public int RowSpan { get; set; } = 1;
+        public int RowOffset { get; set; }
+        public int ColSpan { get; set; } = 1;
+        public int ColOffset { get; set; }
 
         public string Comment { get; set; }
         public object Value
