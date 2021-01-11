@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Richx</RootNamespace>
+    <LangVersion>9</LangVersion>
+    <Version>0.0.1</Version>
+    <Authors>zmjack</Authors>
+    <Description>Powerful table with support for cell styles, intelligent merge, and more.</Description>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/zmjack/Richx</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zmjack/Richx</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>RichTable</PackageTags>
+    <Copyright>Copyright © nstandard.net 2021</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NStandard" Version="0.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Richx\Richx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
