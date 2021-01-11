@@ -16,6 +16,9 @@ namespace Richx
         public static RgbaColor Create(uint value) => new RgbaColor { Value = value };
         public static RgbaColor Create(byte red, byte green, byte blue) => new RgbaColor { Red = red, Green = green, Blue = blue };
         public static RgbaColor Create(byte red, byte green, byte blue, byte alpha) => new RgbaColor { Red = red, Green = green, Blue = blue, Alpha = alpha };
+
+        public static bool operator ==(RgbaColor left, RgbaColor right) => left.Value == right.Value;
+        public static bool operator !=(RgbaColor left, RgbaColor right) => left.Value != right.Value;
     }
 
 }

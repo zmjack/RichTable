@@ -23,5 +23,14 @@ namespace RichTable.Test
             Assert.Equal(0x11223380u, color.Value);
         }
 
+        [Fact]
+        public void EqualTest()
+        {
+            var color1 = new RgbaColor { Red = 0x11, Green = 0x22, Blue = 0x33, Alpha = 0x80 };
+            var color2 = color1;
+            Assert.Equal(color1, color2);
+            Assert.False(ReferenceEquals(color1, color2));
+        }
+
     }
 }

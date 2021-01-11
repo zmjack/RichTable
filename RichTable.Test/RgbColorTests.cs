@@ -20,6 +20,16 @@ namespace RichTable.Test
         {
             var color = new RgbColor { Red = 0x11, Green = 0x22, Blue = 0x33 };
             Assert.Equal(0x00112233u, color.Value);
+
+        }
+
+        [Fact]
+        public void EqualTest()
+        {
+            var color1 = new RgbColor { Red = 0x11, Green = 0x22, Blue = 0x33 };
+            var color2 = color1;
+            Assert.Equal(color1, color2);
+            Assert.False(ReferenceEquals(color1, color2));
         }
 
     }
