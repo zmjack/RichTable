@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Richx
+namespace RichTable
 {
     public class RichRow
     {

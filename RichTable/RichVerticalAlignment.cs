@@ -1,4 +1,4 @@
-﻿namespace Richx
+﻿namespace RichTable
 {
     public enum RichVerticalAlignment
     {
