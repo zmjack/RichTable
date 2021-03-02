@@ -2,7 +2,7 @@ using NStandard;
 using System.Text.RegularExpressions;
 using Xunit;
 
-namespace RichTable.Test
+namespace Richx.Test
 {
     public class RichTests
     {

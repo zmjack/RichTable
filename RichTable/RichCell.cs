@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RichTable
+namespace Richx
 {
     public class RichCell
     {

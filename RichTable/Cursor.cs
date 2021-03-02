@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace RichTable
+namespace Richx
 {
     public struct Cursor
     {

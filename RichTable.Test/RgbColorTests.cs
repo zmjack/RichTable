@@ -1,7 +1,6 @@
-﻿using Richx;
-using Xunit;
+﻿using Xunit;
 
-namespace RichTable.Test
+namespace Richx.Test
 {
     public class RgbColorTests
     {

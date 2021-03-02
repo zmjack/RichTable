@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RichTable
+namespace Richx
 {
     public class RichTable
     {

@@ -1,4 +1,4 @@
-﻿namespace RichTable
+﻿namespace Richx
 {
     public enum CursorPosition
     {

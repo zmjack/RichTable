@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 
-namespace RichTable
+namespace Richx
 {
     public static class LetterSequence
     {
