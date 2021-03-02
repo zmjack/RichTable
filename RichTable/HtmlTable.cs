@@ -49,6 +49,11 @@ namespace Richx
             return $@"style=""{dict.Select(pair => $"{pair.Key}:{pair.Value}").Join(";")}""";
         }
 
+        private string GetContentHtml(string str)
+        {
+            return str?.NormalizeNewLine().Replace(" ", "\u00A0").For(StringFlow.HtmlEncode).Replace(Environment.NewLine, "<br/>");
+        }
+
         public string ToHtml()
         {
             var sb = new StringBuilder();
@@ -73,13 +78,13 @@ namespace Richx
                         sb.AppendLine($@"
 <span class=""excel-sharp"">
     <div class=""excel-comment"" style=""width:{cellWidth}px"">
-        {cell.Comment.NormalizeNewLine().For(StringFlow.HtmlEncode).Replace(Environment.NewLine, "<br/>")}
+        {GetContentHtml(cell.Comment)}
     </div>
-    <span class=""excel-text"">{cell.Text}</span>
+    <span class=""excel-text"">{GetContentHtml(cell.Text)}</span>
 </span>
 ");
                     }
-                    else sb.AppendLine(cell.Text);
+                    else sb.AppendLine(GetContentHtml(cell.Text));
                     sb.AppendLine("</td>");
                 }
                 sb.AppendLine(@"</tr>");
