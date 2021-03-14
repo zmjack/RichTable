@@ -46,7 +46,7 @@ namespace Richx
                 CursorPosition.ColEnd => new Cursor { Row = Cursor.Row, Col = Area.End.Col },
                 CursorPosition.AreaStart => Area.Start,
                 CursorPosition.AreaEnd => Area.End,
-                CursorPosition.AfterAreaEnd => new Cursor { Row = Area.End.Row + 1, Col = Area.Start.Col },
+                CursorPosition.AfterArea => new Cursor { Row = Area.End.Row + 1, Col = Area.Start.Col },
                 _ => Cursor,
             };
         }

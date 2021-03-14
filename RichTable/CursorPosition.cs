@@ -9,6 +9,6 @@
         ColEnd,
         AreaStart,
         AreaEnd,
-        AfterAreaEnd,
+        AfterArea,
     }
 }
