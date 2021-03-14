@@ -6,7 +6,7 @@ namespace Richx
     {
         public RichTable Table { get; private set; }
         public int Index { get; internal set; }
-        private Dictionary<int, RichCell> _innerCells = new Dictionary<int, RichCell>();
+        private Dictionary<int, RichCell> _innerCells = new();
 
         internal RichRow(RichTable table, int index)
         {

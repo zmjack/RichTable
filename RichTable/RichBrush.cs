@@ -177,8 +177,8 @@ namespace Richx
             return this;
         }
 
-        public RichBrush BeginViceBrush() => new RichBrush(this);
-        public RichBrush BeginViceBrush(Cursor cursor) => new RichBrush(this, cursor);
+        public RichBrush BeginViceBrush() => new(this);
+        public RichBrush BeginViceBrush(Cursor cursor) => new(this, cursor);
 
         public void Dispose()
         {

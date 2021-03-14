@@ -6,7 +6,7 @@ namespace Richx
 {
     public class RichTable
     {
-        private Dictionary<int, RichRow> _innerRows = new Dictionary<int, RichRow>();
+        private Dictionary<int, RichRow> _innerRows = new();
         public int MaxRowIndex { get; internal set; } = -1;
         public int MaxColumnIndex { get; internal set; } = -1;
 
@@ -36,7 +36,7 @@ namespace Richx
         public RichCell this[Cursor cursor] => Cell(cursor);
         public RichArea this[Cursor start, Cursor end] => Area(start, end);
 
-        public RichArea Area(Cursor start, Cursor end) => new RichArea(this, start, end);
+        public RichArea Area(Cursor start, Cursor end) => new(this, start, end);
 
         public RichRow Row(int index)
         {
@@ -52,9 +52,9 @@ namespace Richx
 
         public RichCell Cell(Cursor cursor) => Row(cursor.Row).Cell(cursor.Col);
 
-        public RichBrush BeginBrush() => new RichBrush(this, (0, 0), (0, 0));
-        public RichBrush BeginBrush(Cursor cursor) => new RichBrush(this, cursor, cursor);
-        public RichBrush BeginBrush(Cursor start, Cursor end) => new RichBrush(this, start, end);
+        public RichBrush BeginBrush() => new(this, (0, 0), (0, 0));
+        public RichBrush BeginBrush(Cursor cursor) => new(this, cursor, cursor);
+        public RichBrush BeginBrush(Cursor start, Cursor end) => new(this, start, end);
 
         public RichTable Merge(Cursor start, Cursor end)
         {
@@ -68,7 +68,8 @@ namespace Richx
                 {
                     var cell = Cell((row, col));
                     cell.Ignored = true;
-                    cell.RowSpan = cell.ColSpan = 0;
+                    cell.RowSpan = 0;
+                    cell.ColSpan = 0;
                     cell.RowOffset = row - start.Row;
                     cell.ColOffset = col - start.Col;
                     cell.Style = startCell.Style;
@@ -82,9 +83,27 @@ namespace Richx
             return this;
         }
 
-        public RichTable Unmerge(Cursor cursor)
+        public RichTable UndoMerge(Cursor cursor)
         {
-            throw new NotImplementedException();
+            var start = cursor;
+            var startCell = Cell(start);
+            var end = new Cursor(cursor.Row + startCell.RowSpan - 1, cursor.Col + startCell.ColSpan - 1);
+
+            for (int row = start.Row; row <= end.Row; row++)
+            {
+                for (int col = start.Col; col <= end.Col; col++)
+                {
+                    var cell = Cell((row, col));
+                    cell.Ignored = false;
+                    cell.RowSpan = 1;
+                    cell.ColSpan = 1;
+                    cell.RowOffset = 0;
+                    cell.ColOffset = 0;
+                    cell.Style = startCell.Style;
+                }
+            }
+
+            return this;
         }
 
     }
