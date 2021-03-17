@@ -21,6 +21,7 @@ namespace Richx
 
         public static ArgbColor Create(uint value) => new ArgbColor { Value = value };
         public static ArgbColor Create(byte alpha, byte red, byte green, byte blue) => new ArgbColor { _red = red, _green = green, _blue = blue, _alpha = alpha };
+        public static ArgbColor FromArgb(uint argbValue) => new ArgbColor { Value = argbValue };
 
         public static ArgbColor Transparent = new ArgbColor { Value = 0xff000000 };
 

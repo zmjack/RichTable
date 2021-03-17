@@ -5,9 +5,9 @@ namespace Richx.Test
     public class RgbColorTests
     {
         [Fact]
-        public void Test1()
+        public void FromArgbTest()
         {
-            var color = new RgbColor { Value = 0x80112233 };
+            var color = RgbColor.FromArgb(0x80112233);
             Assert.Equal(0x11, color.Red);
             Assert.Equal(0x22, color.Green);
             Assert.Equal(0x33, color.Blue);
@@ -17,16 +17,35 @@ namespace Richx.Test
         }
 
         [Fact]
-        public void Test2()
+        public void ValueTest1()
         {
-            var color = new RgbColor { Red = 0x11, Green = 0x22, Blue = 0x33 };
+            var color = RgbColor.Create(0x80112233);
+            Assert.Equal(0x11, color.Red);
+            Assert.Equal(0x22, color.Green);
+            Assert.Equal(0x33, color.Blue);
+            Assert.Equal(0xff, color.Alpha);
+            Assert.Equal(0x00112233u, color.Value);
             Assert.Equal(0xff112233u, color.ArgbValue);
         }
 
         [Fact]
-        public void EqualTest()
+        public void ValueTest2()
+        {
+            var color = RgbColor.Create(0x11, 0x22, 0x33);
+            Assert.Equal(0x11, color.Red);
+            Assert.Equal(0x22, color.Green);
+            Assert.Equal(0x33, color.Blue);
+            Assert.Equal(0xff, color.Alpha);
+            Assert.Equal(0x00112233u, color.Value);
+            Assert.Equal(0xff112233u, color.ArgbValue);
+        }
+
+        [Fact]
+        public void AssignmentTest()
         {
             var color1 = new RgbColor { Red = 0x11, Green = 0x22, Blue = 0x33 };
+            Assert.Equal(0xff112233u, color1.ArgbValue);
+
             var color2 = color1;
             Assert.Equal(color1, color2);
             Assert.False(ReferenceEquals(color1, color2));

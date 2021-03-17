@@ -20,6 +20,7 @@ namespace Richx
 
         public static RgbColor Create(uint value) => new RgbColor { Value = value };
         public static RgbColor Create(byte red, byte green, byte blue) => new RgbColor { _red = red, _green = green, _blue = blue };
+        public static RgbColor FromArgb(uint argbValue) => new RgbColor { Value = argbValue };
 
         public static bool operator ==(RgbColor left, IArgbColor right) => left.ArgbValue == right.ArgbValue;
         public static bool operator !=(RgbColor left, IArgbColor right) => left.ArgbValue != right.ArgbValue;
