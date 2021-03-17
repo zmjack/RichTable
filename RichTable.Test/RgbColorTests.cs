@@ -12,6 +12,7 @@ namespace Richx.Test
             Assert.Equal(0x22, color.Green);
             Assert.Equal(0x33, color.Blue);
             Assert.Equal(0x00112233u, color.Value);
+            Assert.Equal(0x00112233u, color.ArgbValue);
         }
 
         [Fact]
