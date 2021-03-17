@@ -11,16 +11,16 @@ namespace Richx.Test
             Assert.Equal(0x11, color.Red);
             Assert.Equal(0x22, color.Green);
             Assert.Equal(0x33, color.Blue);
+            Assert.Equal(0xff, color.Alpha);
             Assert.Equal(0x00112233u, color.Value);
-            Assert.Equal(0x00112233u, color.ArgbValue);
+            Assert.Equal(0xff112233u, color.ArgbValue);
         }
 
         [Fact]
         public void Test2()
         {
             var color = new RgbColor { Red = 0x11, Green = 0x22, Blue = 0x33 };
-            Assert.Equal(0x00112233u, color.Value);
-
+            Assert.Equal(0xff112233u, color.ArgbValue);
         }
 
         [Fact]

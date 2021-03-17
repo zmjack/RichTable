@@ -10,7 +10,7 @@ namespace Richx
         [FieldOffset(2)] private byte _red;
         [FieldOffset(0)] private uint _value;
 
-        public byte Alpha => 0;
+        public byte Alpha => byte.MaxValue;
         public byte Blue { get => _blue; set => _blue = value; }
         public byte Green { get => _green; set => _green = value; }
         public byte Red { get => _red; set => _red = value; }

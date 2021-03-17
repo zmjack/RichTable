@@ -20,7 +20,7 @@ namespace Richx.Test
         public void Test2()
         {
             var color = new ArgbColor { Red = 0x11, Green = 0x22, Blue = 0x33, Alpha = 0x80 };
-            Assert.Equal(0x80112233u, color.Value);
+            Assert.Equal(0x80112233u, color.ArgbValue);
         }
 
         [Fact]

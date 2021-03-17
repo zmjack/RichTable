@@ -37,7 +37,7 @@ namespace Richx.Test
             {
                 cell.Style = cell.Style with
                 {
-                    BackgroundColor = 0x00ffff,
+                    BackgroundColor = RgbColor.Create(0x00ffff),
                 };
             }
 
