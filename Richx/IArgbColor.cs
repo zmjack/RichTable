@@ -6,8 +6,6 @@
         byte Red { get; set; }
         byte Green { get; set; }
         byte Blue { get; set; }
-
-        uint Value { get; set; }
         uint ArgbValue { get; }
     }
 }

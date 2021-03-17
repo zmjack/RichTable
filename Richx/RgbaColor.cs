@@ -15,8 +15,9 @@ namespace Richx
         public byte Blue { get => _blue; set => _blue = value; }
         public byte Green { get => _green; set => _green = value; }
         public byte Red { get => _red; set => _red = value; }
-        public uint Value { get => _value; set => _value = value; }
         public uint ArgbValue => ((uint)Alpha << 24) + ((uint)Red << 16) + ((uint)Green << 8) + Blue;
+
+        public uint Value { get => _value; set => _value = value; }
 
         public static RgbaColor Create(uint value) => new RgbaColor { Value = value };
         public static RgbaColor Create(byte red, byte green, byte blue, byte alpha) => new RgbaColor { _red = red, _green = green, _blue = blue, _alpha = alpha };
