@@ -23,8 +23,8 @@ namespace Richx
 
         public static ArgbColor Transparent = new ArgbColor { Value = 0xff000000 };
 
-        public static bool operator ==(ArgbColor left, ArgbColor right) => left.Value == right.Value;
-        public static bool operator !=(ArgbColor left, ArgbColor right) => left.Value != right.Value;
+        public static bool operator ==(ArgbColor left, IArgbColor right) => left.ArgbValue == right.ArgbValue;
+        public static bool operator !=(ArgbColor left, IArgbColor right) => left.ArgbValue != right.ArgbValue;
     }
 
 }

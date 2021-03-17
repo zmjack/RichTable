@@ -23,8 +23,8 @@ namespace Richx
 
         public static RgbaColor Transparent = new RgbaColor { Value = 0x000000ff };
 
-        public static bool operator ==(RgbaColor left, RgbaColor right) => left.Value == right.Value;
-        public static bool operator !=(RgbaColor left, RgbaColor right) => left.Value != right.Value;
+        public static bool operator ==(RgbaColor left, IArgbColor right) => left.ArgbValue == right.ArgbValue;
+        public static bool operator !=(RgbaColor left, IArgbColor right) => left.ArgbValue != right.ArgbValue;
     }
 
 }
