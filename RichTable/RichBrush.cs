@@ -50,6 +50,20 @@ namespace Richx
                 _ => Cursor,
             };
         }
+        public void SetCursor(CursorPosition position, Cursor offset)
+        {
+            Cursor = position switch
+            {
+                CursorPosition.RowStart => new Cursor { Row = Area.Start.Row + offset.Row, Col = Cursor.Col + offset.Col },
+                CursorPosition.RowEnd => new Cursor { Row = Area.End.Row + offset.Row, Col = Cursor.Col + offset.Col },
+                CursorPosition.ColStart => new Cursor { Row = Cursor.Row + offset.Row, Col = Area.Start.Col + offset.Col },
+                CursorPosition.ColEnd => new Cursor { Row = Cursor.Row + offset.Row, Col = Area.End.Col + offset.Col },
+                CursorPosition.AreaStart => new Cursor { Row = Area.Start.Row + offset.Row, Col = Area.Start.Col + offset.Col },
+                CursorPosition.AreaEnd => new Cursor { Row = Area.End.Row + offset.Row, Col = Area.End.Col + offset.Col },
+                CursorPosition.AfterArea => new Cursor { Row = Area.End.Row + 1 + offset.Row, Col = Area.Start.Col + offset.Col },
+                _ => Cursor,
+            };
+        }
 
         public RichBrush ResetCursorColumn()
         {
