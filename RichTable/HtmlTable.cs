@@ -77,10 +77,11 @@ namespace Richx
                     {
                         sb.AppendLine($@"
 <span class=""excel-sharp"">
+    <span class=""excel-text"">{GetContentHtml(cell.Text)}</span>
+    <div></div>
     <div class=""excel-comment"" style=""width:{cellWidth}px"">
         {GetContentHtml(cell.Comment)}
     </div>
-    <span class=""excel-text"">{GetContentHtml(cell.Text)}</span>
 </span>
 ");
                     }
