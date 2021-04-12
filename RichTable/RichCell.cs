@@ -8,7 +8,7 @@ namespace Richx
         public int Index { get; private set; }
 
         public int RowIndex => Row.Index;
-        public RichStyle Style { get; set; } = new RichStyle();
+        public RichStyle Style { get; set; } = RichStyle.Default;
         public object _innerValue;
 
         internal RichCell(RichRow row, int index)

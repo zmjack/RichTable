@@ -2,6 +2,8 @@
 {
     public record RichStyle
     {
+        public static readonly RichStyle Default = new();
+
         public RichStyle() { }
 
         public bool IsHeadCell { get; set; }
