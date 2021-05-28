@@ -13,26 +13,25 @@ namespace Richx
         public RichArea Area { get; private set; }
         public Cursor Cursor;
 
-        internal RichBrush(RichTable table, Cursor start, Cursor end)
+        private readonly int _startCol;
+        private readonly CursorPosition _cursorAfterDispose;
+        private bool disposedValue;
+
+        internal RichBrush(RichTable table, Cursor start)
         {
             Table = table;
             Cursor = start;
-            Area = new RichArea(table, start, end);
+            _startCol = start.Col;
+            Area = new RichArea(table, Cursor, Cursor);
         }
 
-        private RichBrush(RichBrush parent)
+        internal RichBrush(RichBrush parent, Cursor start, CursorPosition cursorAfterDispose)
         {
             Parent = parent;
             Table = parent.Table;
-            Cursor = parent.Cursor;
-            Area = new RichArea(parent.Table, Cursor, Cursor);
-        }
-
-        private RichBrush(RichBrush parent, Cursor cursor)
-        {
-            Parent = parent;
-            Table = parent.Table;
-            Cursor = cursor;
+            Cursor = start;
+            _startCol = start.Col;
+            _cursorAfterDispose = cursorAfterDispose;
             Area = new RichArea(parent.Table, Cursor, Cursor);
         }
 
@@ -40,6 +39,7 @@ namespace Richx
         {
             Cursor = position switch
             {
+                CursorPosition.Preserve => Cursor,
                 CursorPosition.RowStart => new Cursor { Row = Area.Start.Row, Col = Cursor.Col },
                 CursorPosition.RowEnd => new Cursor { Row = Area.End.Row, Col = Cursor.Col },
                 CursorPosition.ColStart => new Cursor { Row = Cursor.Row, Col = Area.Start.Col },
@@ -47,7 +47,6 @@ namespace Richx
                 CursorPosition.AreaStart => Area.Start,
                 CursorPosition.AreaEnd => Area.End,
                 CursorPosition.AfterArea => new Cursor { Row = Area.End.Row + 1, Col = Area.Start.Col },
-                CursorPosition.Preserve => Cursor,
                 _ => throw new NotImplementedException(),
             };
         }
@@ -55,6 +54,7 @@ namespace Richx
         {
             Cursor = position switch
             {
+                CursorPosition.Preserve => new Cursor { Row = Cursor.Row + offset.Row, Col = Cursor.Col + offset.Col },
                 CursorPosition.RowStart => new Cursor { Row = Area.Start.Row + offset.Row, Col = Cursor.Col + offset.Col },
                 CursorPosition.RowEnd => new Cursor { Row = Area.End.Row + offset.Row, Col = Cursor.Col + offset.Col },
                 CursorPosition.ColStart => new Cursor { Row = Cursor.Row + offset.Row, Col = Area.Start.Col + offset.Col },
@@ -62,57 +62,119 @@ namespace Richx
                 CursorPosition.AreaStart => new Cursor { Row = Area.Start.Row + offset.Row, Col = Area.Start.Col + offset.Col },
                 CursorPosition.AreaEnd => new Cursor { Row = Area.End.Row + offset.Row, Col = Area.End.Col + offset.Col },
                 CursorPosition.AfterArea => new Cursor { Row = Area.End.Row + 1 + offset.Row, Col = Area.Start.Col + offset.Col },
-                CursorPosition.Preserve => new Cursor { Row = Cursor.Row + offset.Row, Col = Cursor.Col + offset.Col },
                 _ => throw new NotImplementedException(),
             };
         }
 
-        public RichBrush ResetCursorColumn()
-        {
-            Cursor.Col = Area.Start.Col;
-            return this;
-        }
         private void RecalculateArea(Cursor start, Cursor end) => Area.Update(start, end);
 
-        public RichBrush Print(IEnumerable<object> values) => Print(PrintDirection.Horizontal, values.ToArray());
         public RichBrush Print(object[] values) => Print(PrintDirection.Horizontal, values);
-        public RichBrush Print(PrintDirection direction, IEnumerable<object> values) => Print(direction, values.ToArray());
+        public RichBrush Print(object[][] values) => Print(PrintDirection.Horizontal, values);
         public RichBrush Print(PrintDirection direction, object[] values)
         {
+            if (values is null) return this;
+            return Print(direction, new object[][] { values });
+        }
+        public RichBrush Print(PrintDirection direction, object[][] values)
+        {
+            if (values is null) return this;
+
             var startRow = Cursor.Row;
             var startCol = Cursor.Col;
-            var length = values.Length;
-            var rangeStart = new Cursor { Row = startRow, Col = startCol };
+            var rowLength = values.Length;
+            var colLength = values.Any() ? values.Max(values1 => values1.Length) : 0;
+            var rangeStart = (startRow, startCol);
+
+            Func<int, int, Cursor> getCursor = direction switch
+            {
+                PrintDirection.Horizontal => (row, col) => (startRow + row, startCol + col),
+                PrintDirection.Vertical => (row, col) => (startRow + col, startCol + row),
+                _ => throw new NotImplementedException(),
+            };
+
             Cursor rangeEnd;
+            for (int row = 0; row < rowLength; row++)
+            {
+                for (int col = 0; col < values[row].Length; col++)
+                {
+                    var valueObj = values[row][col];
+                    if (valueObj is null) continue;
+                    Table[getCursor(row, col)].Value = valueObj;
+                }
+            }
 
             if (direction == PrintDirection.Horizontal)
             {
-                for (int col = 0; col < values.Length; col++)
-                {
-                    var valueObj = values[col];
-                    if (valueObj is null) continue;
-                    Table[(startRow, startCol + col)].Value = valueObj;
-                }
-                Cursor.Col = startCol + values.Length;
-                rangeEnd = new Cursor { Row = startRow, Col = startCol + length - 1 };
+                Cursor.Col = startCol + colLength;
+                rangeEnd = (startRow + rowLength - 1, startCol + colLength - 1);
             }
             else if (direction == PrintDirection.Vertical)
             {
-                for (int row = 0; row < values.Length; row++)
-                {
-                    var valueObj = values[row];
-                    if (valueObj is null) continue;
-                    Table[(startRow + row, startCol)].Value = valueObj;
-                }
-                Cursor.Col = startCol + 1;
-                rangeEnd = new Cursor { Row = startRow + length - 1, Col = startCol };
+                Cursor.Col = startCol + rowLength;
+                rangeEnd = (startRow + colLength - 1, startCol + rowLength - 1);
             }
             else throw new NotSupportedException();
 
             RecalculateArea(rangeStart, rangeEnd);
             return this;
         }
-        public RichBrush Print(object[,] values)
+        public RichBrush Print<T>(T[] models, Func<T, object[]> select)
+        {
+            if (models is null) return this;
+            return Print(PrintDirection.Horizontal, models, select);
+        }
+        public RichBrush Print<T>(PrintDirection direction, T[] models, Func<T, object[]> select)
+        {
+            if (models is null) return this;
+            return Print(direction, models.Select(select).ToArray());
+        }
+
+        public RichBrush PrintLine(int lineHeight = 1)
+        {
+            if (lineHeight < 0) throw new ArgumentException($"The {nameof(lineHeight)} must be non-negative.", nameof(lineHeight));
+            Cursor.Col = _startCol;
+            Cursor.Row += lineHeight;
+            return this;
+        }
+        public RichBrush PrintLine(object[] values) => PrintLine(PrintDirection.Horizontal, values);
+        public RichBrush PrintLine(object[][] values) => PrintLine(PrintDirection.Horizontal, values);
+        public RichBrush PrintLine(PrintDirection direction, object[] values)
+        {
+            if (values is null) return this;
+            return PrintLine(direction, new object[][] { values });
+        }
+        public RichBrush PrintLine(PrintDirection direction, object[][] values)
+        {
+            if (values is null) return this;
+
+            Print(direction, values);
+            if (direction == PrintDirection.Horizontal) Cursor.Row += values.Length;
+            else if (direction == PrintDirection.Vertical) Cursor.Row += values.Any() ? values.Max(innerValues => innerValues?.Length ?? 0) : 0;
+            else throw new NotSupportedException();
+
+            Cursor.Col = _startCol;
+            return this;
+        }
+        public RichBrush PrintLine<T>(T[] models, Func<T, object[]> select)
+        {
+            if (models is null) return this;
+            return PrintLine(PrintDirection.Horizontal, models, select);
+        }
+        public RichBrush PrintLine<T>(PrintDirection direction, T[] models, Func<T, object[]> select)
+        {
+            if (models is null) return this;
+
+            var values = models.Select(select).ToArray();
+            Print(direction, values);
+            if (direction == PrintDirection.Horizontal) Cursor.Row += values.Length;
+            else if (direction == PrintDirection.Vertical) Cursor.Row += values.Any() ? values.Max(innerValues => innerValues?.Length ?? 0) : 0;
+            else throw new NotSupportedException();
+
+            Cursor.Col = _startCol;
+            return this;
+        }
+
+        public RichBrush PrintArea(object[,] values)
         {
             var startRow = Cursor.Row;
             var startCol = Cursor.Col;
@@ -136,73 +198,53 @@ namespace Richx
             RecalculateArea(rangeStart, rangeEnd);
             return this;
         }
-        public RichBrush Print(object[][] values)
-        {
-            var startRow = Cursor.Row;
-            var startCol = Cursor.Col;
-            var rowLength = values.Length;
-            var colLength = values.Any() ? values.Max(values1 => values1.Length) : 0;
-
-            for (int row = 0; row < rowLength; row++)
-            {
-                for (int col = 0; col < values[row].Length; col++)
-                {
-                    var valueObj = values[row][col];
-                    if (valueObj is null) continue;
-                    Table[(startRow + row, startCol + col)].Value = valueObj;
-                }
-            }
-            Cursor.Col = startCol + colLength;
-
-            var rangeStart = (startRow, startCol);
-            var rangeEnd = (startRow + rowLength - 1, startCol + colLength - 1);
-
-            RecalculateArea(rangeStart, rangeEnd);
-            return this;
-        }
-
-        public RichBrush PrintLine() { Cursor.Row++; ResetCursorColumn(); return this; }
-        public RichBrush PrintLine(IEnumerable<object> values) => PrintLine(PrintDirection.Horizontal, values.ToArray());
-        public RichBrush PrintLine(object[] values) => PrintLine(PrintDirection.Horizontal, values);
-        public RichBrush PrintLine(PrintDirection direction, IEnumerable<object> values) => PrintLine(direction, values.ToArray());
-        public RichBrush PrintLine(PrintDirection direction, object[] values)
-        {
-            return Print(direction, values).Then(range =>
-            {
-                if (direction == PrintDirection.Horizontal) Cursor.Row++;
-                else if (direction == PrintDirection.Vertical) Cursor.Row += values.Length;
-                else throw new NotSupportedException();
-                ResetCursorColumn();
-            });
-        }
-        public RichBrush PrintLine(object[,] values)
-        {
-            var rowLength = values.GetLength(0);
-            return Print(values).Then(range => { Cursor.Row += values.GetLength(0); ResetCursorColumn(); });
-        }
-        public RichBrush PrintLine(object[][] values)
-        {
-            var rowLength = values.GetLength(0);
-            return Print(values).Then(range => { Cursor.Row += values.GetLength(0); ResetCursorColumn(); });
-        }
-
-        public RichBrush PrintDataTable(DataTable table)
+        public RichBrush PrintArea(DataTable table)
         {
             var range1 = PrintLine(table.Columns.Cast<DataColumn>().Select(a => a.ColumnName).ToArray());
             var range2 = PrintLine((from DataRow row in table.Select() select row.ItemArray.ToArray()).ToArray());
             return this;
         }
 
-        public RichBrush BeginViceBrush() => new(this);
-        public RichBrush BeginViceBrush(Cursor cursor) => new(this, cursor);
-
-        public void Dispose()
+        public RichBrush PrintAreaLine(object[,] values)
         {
-            if (Parent is not null)
+            PrintArea(values);
+            Cursor.Row += values.GetLength(0);
+            Cursor.Col = _startCol;
+            return this;
+        }
+        public RichBrush PrintAreaLine(DataTable table)
+        {
+            PrintArea(table);
+            Cursor.Row += table.Rows.Count;
+            Cursor.Col = _startCol;
+            return this;
+        }
+
+        public RichBrush BeginViceBrush(CursorPosition cursorAfterDispose) => new(this, Cursor, cursorAfterDispose);
+        public RichBrush BeginViceBrush(Cursor cursor, CursorPosition cursorAfterDispose) => new(this, cursor, cursorAfterDispose);
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
             {
-                Parent.Area.Extend(Area);
+                if (disposing)
+                {
+                    if (Parent is not null)
+                    {
+                        Parent.Area.Extend(Area);
+                        SetCursor(_cursorAfterDispose);
+                        Parent.Cursor = Cursor;
+                    }
+                }
+
+                disposedValue = true;
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

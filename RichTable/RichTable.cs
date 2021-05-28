@@ -51,9 +51,8 @@ namespace Richx
 
         public RichCell Cell(Cursor cursor) => Row(cursor.Row).Cell(cursor.Col);
 
-        public RichBrush BeginBrush() => new(this, (0, 0), (0, 0));
-        public RichBrush BeginBrush(Cursor cursor) => new(this, cursor, cursor);
-        public RichBrush BeginBrush(Cursor start, Cursor end) => new(this, start, end);
+        public RichBrush BeginBrush() => new(this, (0, 0));
+        public RichBrush BeginBrush(Cursor cursor) => new(this, cursor);
 
         public RichTable Merge(Cursor start, Cursor end)
         {
