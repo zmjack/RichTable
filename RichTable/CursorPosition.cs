@@ -7,8 +7,10 @@
         RowEnd,
         ColStart,
         ColEnd,
-        AreaStart,
-        AreaEnd,
+        AreaTopLeft,
+        AreaTopRight,
+        AreaBottomLeft,
+        AreaBottomRight,
         AfterArea,
     }
 }
