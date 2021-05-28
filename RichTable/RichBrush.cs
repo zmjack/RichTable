@@ -224,6 +224,7 @@ namespace Richx
             return this;
         }
 
+        public RichBrush BeginViceBrush(Cursor cursor) => new(this, cursor, CursorPosition.Preserve);
         public RichBrush BeginViceBrush(CursorPosition cursorAfterDispose) => new(this, Cursor, cursorAfterDispose);
         public RichBrush BeginViceBrush(Cursor cursor, CursorPosition cursorAfterDispose) => new(this, cursor, cursorAfterDispose);
 
