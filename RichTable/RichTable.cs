@@ -5,7 +5,7 @@ namespace Richx
 {
     public class RichTable
     {
-        private Dictionary<int, RichRow> _innerRows = new();
+        private readonly Dictionary<int, RichRow> _innerRows = new();
         public int MaxRowIndex { get; internal set; } = -1;
         public int MaxColumnIndex { get; internal set; } = -1;
 
@@ -51,8 +51,10 @@ namespace Richx
 
         public RichCell Cell(Cursor cursor) => Row(cursor.Row).Cell(cursor.Col);
 
-        public RichBrush BeginBrush() => new(this, (0, 0));
-        public RichBrush BeginBrush(Cursor cursor) => new(this, cursor);
+        public RichBrush BeginBrush() => new(this, null, (0, 0));
+        public RichBrush BeginBrush(RichStyle style) => new(this, null, (0, 0), style);
+        public RichBrush BeginBrush(Cursor cursor) => new(this, null, cursor);
+        public RichBrush BeginBrush(Cursor cursor, RichStyle style) => new(this, null, cursor, style);
 
         public RichTable Merge(Cursor start, Cursor end)
         {

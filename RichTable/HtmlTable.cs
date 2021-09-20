@@ -34,6 +34,8 @@ namespace Richx
             var dict = new Dictionary<string, string>();
             var style = cell.Style;
 
+            if (style is null) return string.Empty;
+
             if (style.BackgroundColor is not null) dict.Add("background-color", $"#{style.BackgroundColor.Red:x2}{style.BackgroundColor.Green:x2}{style.BackgroundColor.Blue:x2}{(style.BackgroundColor.Alpha < byte.MaxValue ? $"{style.BackgroundColor.Alpha:x2}" : "")}");
             if (style.Color is not null) dict.Add("color", $"#{style.Color.Red:x2}{style.Color.Green:x2}{style.Color.Blue:x2}{(style.Color.Alpha < byte.MaxValue ? $"{style.Color.Alpha}:x2" : "")}");
             if (style.FontFamily is not null) dict.Add("font-family", $"{style.FontFamily}");

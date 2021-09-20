@@ -12,27 +12,29 @@ namespace Richx
         public RichTable Table { get; private set; }
         public RichArea Area { get; private set; }
         public Cursor Cursor;
+        public RichStyle Style { get; private set; }
 
         private readonly int _startCol;
-        private readonly CursorPosition _cursorAfterDispose;
         private bool disposedValue;
 
-        internal RichBrush(RichTable table, Cursor start)
+        internal RichBrush(RichTable table, RichBrush parent, Cursor start)
         {
             Table = table;
+            Parent = parent;
             Cursor = start;
             _startCol = start.Col;
             Area = new RichArea(table, Cursor, Cursor);
+            Style = RichStyle.Default;
         }
 
-        internal RichBrush(RichBrush parent, Cursor start, CursorPosition cursorAfterDispose)
+        internal RichBrush(RichTable table, RichBrush parent, Cursor start, RichStyle style)
         {
+            Table = table;
             Parent = parent;
-            Table = parent.Table;
             Cursor = start;
             _startCol = start.Col;
-            _cursorAfterDispose = cursorAfterDispose;
             Area = new RichArea(parent.Table, Cursor, Cursor);
+            Style = style;
         }
 
         public void SetCursor(CursorPosition position)
@@ -104,6 +106,7 @@ namespace Richx
                     var valueObj = values[row][col];
                     if (valueObj is null) continue;
                     Table[getCursor(row, col)].Value = valueObj;
+                    Table[getCursor(row, col)].Style = Style;
                 }
             }
 
@@ -192,6 +195,7 @@ namespace Richx
                     var valueObj = values[row, col];
                     if (valueObj is null) continue;
                     Table[(startRow + row, startCol + col)].Value = valueObj;
+                    Table[(startRow + row, startCol + col)].Style = Style;
                 }
             }
             Cursor.Col = startCol + colLength;
@@ -224,10 +228,10 @@ namespace Richx
             return this;
         }
 
-        public RichBrush BeginViceBrush() => new(this, Cursor, CursorPosition.Preserve);
-        public RichBrush BeginViceBrush(Cursor cursor) => new(this, cursor, CursorPosition.Preserve);
-        public RichBrush BeginViceBrush(CursorPosition cursorAfterDispose) => new(this, Cursor, cursorAfterDispose);
-        public RichBrush BeginViceBrush(Cursor cursor, CursorPosition cursorAfterDispose) => new(this, cursor, cursorAfterDispose);
+        public RichBrush BeginViceBrush() => new(Table, this, Cursor);
+        public RichBrush BeginViceBrush(Cursor cursor) => new(Table, this, cursor);
+        public RichBrush BeginViceBrush(RichStyle style) => new(Table, this, Cursor, style);
+        public RichBrush BeginViceBrush(Cursor cursor, RichStyle style) => new(Table, this, cursor, style);
 
         protected virtual void Dispose(bool disposing)
         {
@@ -238,8 +242,6 @@ namespace Richx
                     if (Parent is not null)
                     {
                         Parent.Area.Extend(Area);
-                        SetCursor(_cursorAfterDispose);
-                        Parent.Cursor = Cursor;
                     }
                 }
 
