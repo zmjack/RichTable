@@ -104,9 +104,11 @@ namespace Richx
                 for (int col = 0; col < values[row].Length; col++)
                 {
                     var valueObj = values[row][col];
+                    var cell = Table[getCursor(row, col)];
+                    cell.Style = Style;
+
                     if (valueObj is null) continue;
-                    Table[getCursor(row, col)].Value = valueObj;
-                    Table[getCursor(row, col)].Style = Style;
+                    cell.Value = valueObj;
                 }
             }
 
@@ -193,9 +195,11 @@ namespace Richx
                 for (var col = 0; col < colLength; col++)
                 {
                     var valueObj = values[row, col];
+                    var cell = Table[(startRow + row, startCol + col)];
+                    cell.Style = Style;
+
                     if (valueObj is null) continue;
-                    Table[(startRow + row, startCol + col)].Value = valueObj;
-                    Table[(startRow + row, startCol + col)].Style = Style;
+                    cell.Value = valueObj;
                 }
             }
             Cursor.Col = startCol + colLength;
