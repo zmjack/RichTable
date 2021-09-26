@@ -51,7 +51,7 @@ namespace Richx
                 CursorPosition.AreaBottomLeft => new Cursor { Row = Area.End.Row, Col = Area.Start.Col },
                 CursorPosition.AreaBottomRight => Area.End,
                 CursorPosition.AfterArea => new Cursor { Row = Area.End.Row + 1, Col = Area.Start.Col },
-                CursorPosition.AsideArea => new Cursor { Row = Area.End.Row, Col = Area.Start.Col + 1 },
+                CursorPosition.AsideArea => new Cursor { Row = Area.Start.Row, Col = Area.End.Col + 1 },
                 _ => throw new NotImplementedException(),
             };
         }
@@ -69,7 +69,7 @@ namespace Richx
                 CursorPosition.AreaBottomLeft => new Cursor { Row = Area.End.Row + offset.Row, Col = Area.Start.Col + offset.Col },
                 CursorPosition.AreaBottomRight => new Cursor { Row = Area.End.Row + offset.Row, Col = Area.End.Col + offset.Col },
                 CursorPosition.AfterArea => new Cursor { Row = Area.End.Row + 1 + offset.Row, Col = Area.Start.Col + offset.Col },
-                CursorPosition.AsideArea => new Cursor { Row = Area.End.Row + offset.Row, Col = Area.Start.Col + 1 + offset.Col },
+                CursorPosition.AsideArea => new Cursor { Row = Area.Start.Row + offset.Row, Col = Area.End.Col + 1 + offset.Col },
                 _ => throw new NotImplementedException(),
             };
         }
