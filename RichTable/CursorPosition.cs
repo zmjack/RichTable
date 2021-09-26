@@ -12,6 +12,6 @@
         AreaBottomLeft,
         AreaBottomRight,
         AfterArea,
-        AfterAreaRight,
+        AsideArea,
     }
 }
