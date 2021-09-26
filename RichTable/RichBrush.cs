@@ -143,8 +143,11 @@ namespace Richx
         public RichBrush PrintLine(int lineHeight = 1)
         {
             if (lineHeight < 0) throw new ArgumentException($"The {nameof(lineHeight)} must be non-negative.", nameof(lineHeight));
+
+            RecalculateArea((Cursor.Row + 1, _startCol), (Cursor.Row + lineHeight, _startCol));
             Cursor.Col = _startCol;
             Cursor.Row += lineHeight;
+
             return this;
         }
         public RichBrush PrintLine(object[] values) => PrintLine(PrintDirection.Horizontal, values);
