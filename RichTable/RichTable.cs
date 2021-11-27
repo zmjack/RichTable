@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Richx
@@ -51,12 +52,17 @@ namespace Richx
 
         public RichCell Cell(Cursor cursor) => Row(cursor.Row).Cell(cursor.Col);
 
+        public Masking CreateMasking(Cursor cursor, AfterCursor afterCursor, RichStyle richStyle)
+        {
+            return new Masking(this, null, cursor, afterCursor, richStyle);
+        }
+
         public RichBrush BeginBrush() => new(this, null, (0, 0));
         public RichBrush BeginBrush(RichStyle style) => new(this, null, (0, 0), style);
         public RichBrush BeginBrush(Cursor cursor) => new(this, null, cursor);
         public RichBrush BeginBrush(Cursor cursor, RichStyle style) => new(this, null, cursor, style);
 
-        public RichTable Merge(Cursor start, Cursor end)
+        public void Merge(Cursor start, Cursor end)
         {
             var rowSpan = end.Row - start.Row + 1;
             var colSpan = end.Col - start.Col + 1;
@@ -67,9 +73,11 @@ namespace Richx
                 for (int col = start.Col; col <= end.Col; col++)
                 {
                     var cell = Cell((row, col));
+                    if (cell.Merged) throw new InvalidOperationException("Specifies that the merge region contains the merged cells.");
+
                     cell.Ignored = true;
-                    cell.RowSpan = 0;
-                    cell.ColSpan = 0;
+                    cell.RowSpan = rowSpan;
+                    cell.ColSpan = colSpan;
                     cell.RowOffset = row - start.Row;
                     cell.ColOffset = col - start.Col;
                     cell.Style = startCell.Style;
@@ -77,17 +85,23 @@ namespace Richx
             }
 
             startCell.Ignored = false;
-            startCell.RowSpan = rowSpan;
-            startCell.ColSpan = colSpan;
-
-            return this;
         }
 
-        public RichTable UndoMerge(Cursor cursor)
+        public void UndoMerge(Cursor cursor)
         {
-            var start = cursor;
-            var startCell = Cell(start);
-            var end = new Cursor(cursor.Row + startCell.RowSpan - 1, cursor.Col + startCell.ColSpan - 1);
+            var cursorCell = Cell(cursor);
+            if (!cursorCell.Merged) return;
+
+            Cursor start = cursorCell.Ignored switch
+            {
+                false => cursor,
+                true => (cursor.Row - cursorCell.RowOffset, cursor.Col - cursorCell.ColOffset),
+            };
+            Cursor end = cursorCell.Ignored switch
+            {
+                false => (cursor.Row + cursorCell.RowSpan - 1, cursor.Col + cursorCell.ColSpan - 1),
+                true => (cursor.Row + cursorCell.RowSpan - 1 - cursorCell.RowOffset, cursor.Col + cursorCell.ColSpan - 1 - cursorCell.ColOffset),
+            };
 
             for (int row = start.Row; row <= end.Row; row++)
             {
@@ -99,11 +113,9 @@ namespace Richx
                     cell.ColSpan = 1;
                     cell.RowOffset = 0;
                     cell.ColOffset = 0;
-                    cell.Style = startCell.Style;
+                    cell.Style = cursorCell.Style;
                 }
             }
-
-            return this;
         }
 
     }
