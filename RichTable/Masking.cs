@@ -12,22 +12,22 @@ namespace Richx
         public Masking Parent { get; set; }
         public Cursor Start { get; private set; }
         public Cursor End { get; private set; }
-        public RichStyle Style { get; private set; }
+        public RichStyle DefaultStyle { get; private set; }
         public AfterCursor AfterCursor { get; private set; }
 
-        internal Masking(RichTable table, Masking parent, Cursor start, AfterCursor afterCursor, RichStyle style)
+        internal Masking(RichTable table, Masking parent, Cursor start, AfterCursor afterCursor, RichStyle defaultStyle)
         {
             Table = table;
             Parent = parent;
             Cursor = start;
             AfterCursor = afterCursor;
-            Style = style;
+            DefaultStyle = defaultStyle;
             Start = End = start;
         }
 
-        public void Paint(Layout area)
+        public void Paint(Layout layout)
         {
-            var afterCursor = area.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
+            var afterCursor = layout.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
 
             Cursor GetNextCursor()
             {
@@ -43,7 +43,7 @@ namespace Richx
             int? mergeTo = null;
             Cursor? manualMergeFrom = null;
 
-            foreach (var obj in area.Objects)
+            foreach (var obj in layout.Objects)
             {
                 if (manualMergeFrom is not null && obj is Layout.CellSpan)
                 {
@@ -56,7 +56,7 @@ namespace Richx
 
                 if (obj is Layout subLayout)
                 {
-                    var subMasking = new Masking(Table, this, Cursor, afterCursor, area.Style);
+                    var subMasking = new Masking(Table, this, Cursor, afterCursor, layout.Style);
                     subMasking.Paint(subLayout);
                     ExtendBound(subMasking.Start, subMasking.End);
                     manualMergeFrom = null;
@@ -71,7 +71,7 @@ namespace Richx
                 else
                 {
                     Table[Cursor].Value = obj;
-                    Table[Cursor].Style = area.Style;
+                    Table[Cursor].Style = layout.Style == RichStyle.Default ? DefaultStyle : layout.Style;
                     ExtendBound(Cursor);
                     singelCells.Add(Cursor);
                     manualMergeFrom = Cursor;
