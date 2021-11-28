@@ -28,6 +28,7 @@ namespace Richx
         public void Paint(Layout layout)
         {
             var afterCursor = layout.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
+            var style = layout.Style == RichStyle.Default ? DefaultStyle : layout.Style;
 
             Cursor GetNextCursor()
             {
@@ -56,7 +57,7 @@ namespace Richx
 
                 if (obj is Layout subLayout)
                 {
-                    var subMasking = new Masking(Table, this, Cursor, afterCursor, layout.Style);
+                    var subMasking = new Masking(Table, this, Cursor, afterCursor, style);
                     subMasking.Paint(subLayout);
                     ExtendBound(subMasking.Start, subMasking.End);
                     manualMergeFrom = null;
@@ -71,7 +72,7 @@ namespace Richx
                 else
                 {
                     Table[Cursor].Value = obj;
-                    Table[Cursor].Style = layout.Style == RichStyle.Default ? DefaultStyle : layout.Style;
+                    Table[Cursor].Style = style;
                     ExtendBound(Cursor);
                     singelCells.Add(Cursor);
                     manualMergeFrom = Cursor;
