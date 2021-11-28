@@ -12,7 +12,7 @@ namespace Richx
         public bool TopToBottom { get; set; }
         public object[] Objects { get; set; }
 
-        public static CellSpan Span() => new();
+        public static readonly CellSpan Span = new();
 
         public static Layout Vertical(IEnumerable<object> objects) => Vertical(RichStyle.Default, objects.ToArray());
         public static Layout Vertical(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());

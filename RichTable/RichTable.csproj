@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Richx</RootNamespace>
     <LangVersion>preview</LangVersion>
-    <Version>0.2.14</Version>
+    <Version>0.2.15</Version>
     <Authors>zmjack</Authors>
     <Description>Powerful table with support for cell styles, intelligent merge, and more.</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
