@@ -25,7 +25,7 @@ namespace Richx
             Start = End = start;
         }
 
-        public void Paint(LayoutArea area)
+        public void Paint(Layout area)
         {
             var afterCursor = area.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
 
@@ -45,7 +45,7 @@ namespace Richx
 
             foreach (var obj in area.Objects)
             {
-                if (manualMergeFrom is not null && obj is null)
+                if (manualMergeFrom is not null && obj is Layout.CellSpan)
                 {
                     //TODO: optimizable
                     Table.UndoMerge(manualMergeFrom.Value);
@@ -54,10 +54,10 @@ namespace Richx
                     continue;
                 }
 
-                if (obj is LayoutArea subArea)
+                if (obj is Layout subLayout)
                 {
                     var subMasking = new Masking(Table, this, Cursor, afterCursor, area.Style);
-                    subMasking.Paint(subArea);
+                    subMasking.Paint(subLayout);
                     ExtendBound(subMasking.Start, subMasking.End);
                     manualMergeFrom = null;
                     Cursor = subMasking.GetAfterCursor();

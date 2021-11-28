@@ -3,14 +3,23 @@ using System.Linq;
 
 namespace Richx
 {
-    public static class Layout
+    public class Layout
     {
-        public static LayoutArea Vertical(IEnumerable<object> objects) => Vertical(RichStyle.Default, objects.ToArray());
-        public static LayoutArea Vertical(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());
-        public static LayoutArea Vertical(RichStyle style, IEnumerable<object> objects) => Vertical(style, objects.ToArray());
-        public static LayoutArea Vertical(RichStyle style, params object[] objects)
+        public class CellSpan { }
+
+        public RichStyle Style { get; set; }
+        public bool LeftToRight { get; set; }
+        public bool TopToBottom { get; set; }
+        public object[] Objects { get; set; }
+
+        public static CellSpan Span() => new();
+
+        public static Layout Vertical(IEnumerable<object> objects) => Vertical(RichStyle.Default, objects.ToArray());
+        public static Layout Vertical(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());
+        public static Layout Vertical(RichStyle style, IEnumerable<object> objects) => Vertical(style, objects.ToArray());
+        public static Layout Vertical(RichStyle style, params object[] objects)
         {
-            return new LayoutArea
+            return new Layout
             {
                 Style = style,
                 LeftToRight = false,
@@ -19,12 +28,12 @@ namespace Richx
             };
         }
 
-        public static LayoutArea Horizontal(IEnumerable<object> objects) => Horizontal(RichStyle.Default, objects.ToArray());
-        public static LayoutArea Horizontal(params object[] objects) => Horizontal(RichStyle.Default, objects.ToArray());
-        public static LayoutArea Horizontal(RichStyle style, IEnumerable<object> objects) => Horizontal(style, objects.ToArray());
-        public static LayoutArea Horizontal(RichStyle style, params object[] objects)
+        public static Layout Horizontal(IEnumerable<object> objects) => Horizontal(RichStyle.Default, objects.ToArray());
+        public static Layout Horizontal(params object[] objects) => Horizontal(RichStyle.Default, objects.ToArray());
+        public static Layout Horizontal(RichStyle style, IEnumerable<object> objects) => Horizontal(style, objects.ToArray());
+        public static Layout Horizontal(RichStyle style, params object[] objects)
         {
-            return new LayoutArea
+            return new Layout
             {
                 Style = style,
                 LeftToRight = true,
