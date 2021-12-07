@@ -64,6 +64,7 @@ namespace Richx
 
         public void Merge(Cursor start, Cursor end)
         {
+            if (start == end) throw new InvalidOperationException("Can not merge a single cell.");
             var rowSpan = end.Row - start.Row + 1;
             var colSpan = end.Col - start.Col + 1;
             var startCell = Cell(start);
@@ -73,7 +74,7 @@ namespace Richx
                 for (int col = start.Col; col <= end.Col; col++)
                 {
                     var cell = Cell((row, col));
-                    if (cell.Merged) throw new InvalidOperationException("Specifies that the merge region contains the merged cells.");
+                    if (cell.Merged) continue;
 
                     cell.Ignored = true;
                     cell.RowSpan = rowSpan;

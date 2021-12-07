@@ -32,6 +32,8 @@ namespace Richx
             Col = cell.col;
         }
 
+        public static bool operator ==(Cursor left, Cursor right) => left.Row == right.Row && left.Col == right.Col;
+        public static bool operator !=(Cursor left, Cursor right) => left.Row != right.Row || left.Col != right.Col;
         public override string ToString() => $"{LetterSequence.GetLetter(Col)}{Row + 1}, ({Row}, {Col})";
 
         public static implicit operator Cursor(string cellName) => new(cellName);

@@ -40,7 +40,7 @@ namespace Richx
                 }
             }
 
-            var singelCells = new List<Cursor>();
+            var singleCells = new List<Cursor>();
             int? mergeTo = null;
             Cursor? manualMergeFrom = null;
 
@@ -74,7 +74,7 @@ namespace Richx
                     Table[Cursor].Value = obj;
                     Table[Cursor].Style = style;
                     ExtendBound(Cursor);
-                    singelCells.Add(Cursor);
+                    singleCells.Add(Cursor);
                     manualMergeFrom = Cursor;
                     Cursor = GetNextCursor();
                 }
@@ -82,12 +82,15 @@ namespace Richx
 
             if (mergeTo is not null)
             {
-                foreach (var cursor in singelCells)
+                foreach (var cursor in singleCells)
                 {
-                    switch (afterCursor)
+                    if (afterCursor == AfterCursor.AsideTopRight && (cursor != (mergeTo.Value, cursor.Col)))
                     {
-                        case AfterCursor.AsideTopRight: Table[cursor, (mergeTo.Value, cursor.Col)].Merge(); break;
-                        case AfterCursor.UnderBottomLeft: Table[cursor, (cursor.Row, mergeTo.Value)].Merge(); break;
+                        Table[cursor, (mergeTo.Value, cursor.Col)].Merge();
+                    }
+                    else if (afterCursor == AfterCursor.UnderBottomLeft && (cursor != (cursor.Row, mergeTo.Value)))
+                    {
+                        Table[cursor, (cursor.Row, mergeTo.Value)].Merge();
                     }
                 }
             }
