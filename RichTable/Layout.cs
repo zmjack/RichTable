@@ -14,6 +14,7 @@ namespace Richx
 
         public static readonly CellSpan Span = new();
 
+        public static Layout Vertical<T>(IEnumerable<T> objects) => Vertical(RichStyle.Default, objects.ToArray());
         public static Layout Vertical(IEnumerable<object> objects) => Vertical(RichStyle.Default, objects.ToArray());
         public static Layout Vertical(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());
         public static Layout Vertical(RichStyle style, IEnumerable<object> objects) => Vertical(style, objects.ToArray());
@@ -28,6 +29,7 @@ namespace Richx
             };
         }
 
+        public static Layout Horizontal<T>(IEnumerable<T> objects) => Horizontal(RichStyle.Default, objects.ToArray());
         public static Layout Horizontal(IEnumerable<object> objects) => Horizontal(RichStyle.Default, objects.ToArray());
         public static Layout Horizontal(params object[] objects) => Horizontal(RichStyle.Default, objects.ToArray());
         public static Layout Horizontal(RichStyle style, IEnumerable<object> objects) => Horizontal(style, objects.ToArray());
