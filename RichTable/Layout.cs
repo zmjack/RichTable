@@ -15,10 +15,10 @@ namespace Richx
         public static readonly CellSpan Span = new();
 
         public static Layout Vertical<T>(IEnumerable<T> objects) => Vertical(RichStyle.Default, objects.ToArray());
-        public static Layout Vertical(IEnumerable<object> objects) => Vertical(RichStyle.Default, objects.ToArray());
-        public static Layout Vertical(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());
-        public static Layout Vertical(RichStyle style, IEnumerable<object> objects) => Vertical(style, objects.ToArray());
-        public static Layout Vertical(RichStyle style, params object[] objects)
+        public static Layout Vertical<T>(RichStyle style, IEnumerable<T> objects) => Vertical(style, objects.ToArray());
+
+        public static Layout VerticalAny(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());
+        public static Layout VerticalAny(RichStyle style, params object[] objects)
         {
             return new Layout
             {
@@ -29,11 +29,11 @@ namespace Richx
             };
         }
 
-        public static Layout Horizontal<T>(IEnumerable<T> objects) => Horizontal(RichStyle.Default, objects.ToArray());
-        public static Layout Horizontal(IEnumerable<object> objects) => Horizontal(RichStyle.Default, objects.ToArray());
-        public static Layout Horizontal(params object[] objects) => Horizontal(RichStyle.Default, objects.ToArray());
-        public static Layout Horizontal(RichStyle style, IEnumerable<object> objects) => Horizontal(style, objects.ToArray());
-        public static Layout Horizontal(RichStyle style, params object[] objects)
+        public static Layout Horizontal<T>(IEnumerable<T> objects) => HorizontalAny(RichStyle.Default, objects.ToArray());
+        public static Layout Horizontal(RichStyle style, IEnumerable<object> objects) => HorizontalAny(style, objects.ToArray());
+
+        public static Layout HorizontalAny(params object[] objects) => HorizontalAny(RichStyle.Default, objects.ToArray());
+        public static Layout HorizontalAny(RichStyle style, params object[] objects)
         {
             return new Layout
             {
