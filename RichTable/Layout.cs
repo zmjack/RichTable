@@ -14,10 +14,10 @@ namespace Richx
 
         public static readonly CellSpan Span = new();
 
-        public static Layout Vertical<T>(IEnumerable<T> objects) => Vertical(RichStyle.Default, objects.ToArray());
-        public static Layout Vertical<T>(RichStyle style, IEnumerable<T> objects) => Vertical(style, objects.ToArray());
+        public static Layout Vertical<T>(IEnumerable<T> objects) => VerticalAny(RichStyle.Default, objects.ToArray());
+        public static Layout Vertical<T>(RichStyle style, IEnumerable<T> objects) => VerticalAny(style, objects.ToArray());
 
-        public static Layout VerticalAny(params object[] objects) => Vertical(RichStyle.Default, objects.ToArray());
+        public static Layout VerticalAny(params object[] objects) => VerticalAny(RichStyle.Default, objects.ToArray());
         public static Layout VerticalAny(RichStyle style, params object[] objects)
         {
             return new Layout
