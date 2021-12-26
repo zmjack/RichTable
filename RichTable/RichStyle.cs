@@ -1,6 +1,6 @@
 ﻿namespace Richx
 {
-    public record RichStyle : ICellStyle, IContentStyle
+    public record RichStyle : IContentStyle, IValueStyle
     {
         public static readonly RichStyle Default = new();
 
