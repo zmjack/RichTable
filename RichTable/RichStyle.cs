@@ -1,4 +1,6 @@
-﻿namespace Richx
+﻿using System;
+
+namespace Richx
 {
     public record RichStyle : IContentStyle, IValueStyle
     {
@@ -22,5 +24,27 @@
         public bool? BorderRight { get; set; }
 
         public string Format { get; set; }
+
+        public string FormatValue(object value)
+        {
+            if (Format is not null)
+            {
+                return value switch
+                {
+                    short v => v.ToString(Format),
+                    int v => v.ToString(Format),
+                    long v => v.ToString(Format),
+                    ushort v => v.ToString(Format),
+                    uint v => v.ToString(Format),
+                    ulong v => v.ToString(Format),
+                    float v => v.ToString(Format),
+                    double v => v.ToString(Format),
+                    DateTime v => v.ToString(Format),
+                    decimal v => v.ToString(Format),
+                    _ => value?.ToString(),
+                };
+            }
+            else return value?.ToString();
+        }
     }
 }

@@ -71,8 +71,8 @@ namespace Richx
                 }
                 else
                 {
-                    Table[Cursor].Value = obj;
                     Table[Cursor].Style = style;
+                    Table[Cursor].Value = obj;
                     ExtendBound(Cursor);
                     singleCells.Add(Cursor);
                     manualMergeFrom = Cursor;

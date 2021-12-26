@@ -48,30 +48,7 @@ namespace Richx
                 else _innerValue = value;
             }
         }
-        public string Text
-        {
-            get
-            {
-                if (Format is not null)
-                {
-                    return Value switch
-                    {
-                        short v => v.ToString(Format),
-                        int v => v.ToString(Format),
-                        long v => v.ToString(Format),
-                        ushort v => v.ToString(Format),
-                        uint v => v.ToString(Format),
-                        ulong v => v.ToString(Format),
-                        float v => v.ToString(Format),
-                        double v => v.ToString(Format),
-                        DateTime v => v.ToString(Format),
-                        decimal v => v.ToString(Format),
-                        _ => Value?.ToString(),
-                    };
-                }
-                else return Value?.ToString();
-            }
-        }
+        public string Text => Style?.FormatValue(Value) ?? Value?.ToString();
 
     }
 }

@@ -11,7 +11,14 @@ namespace RichTable.Test
         [Fact]
         public void Test1()
         {
-            var layout = Layout.HorizontalAny("123", null, null, Layout.HorizontalAny("123", "123", null, null), Layout.HorizontalAny("a", "b"));
+            var style = new RichStyle
+            {
+                Format = "0,0",
+            };
+            var layout = Layout.HorizontalAny(style,
+                1233, null, null,
+                Layout.HorizontalAny(1233, "1233", null, null),
+                Layout.HorizontalAny("a", "b"));
             var table = new Richx.RichTable();
             var masking = table.CreateMasking("A1", AfterCursor.Default, RichStyle.Default);
             masking.Paint(layout);
