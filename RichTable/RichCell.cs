@@ -31,6 +31,7 @@ namespace Richx
         public int RowOffset { get; set; }
         public int ColSpan { get; set; } = 1;
         public int ColOffset { get; set; }
+        public string Format => Style.Format;
 
         public string Comment { get; set; }
         public object Value
@@ -42,13 +43,11 @@ namespace Richx
                 {
                     _innerValue = richValue.Value;
                     Comment = richValue.Comment;
-                    Format = richValue.Format;
                     if (richValue.Style is not null) Style = richValue.Style;
                 }
                 else _innerValue = value;
             }
         }
-        public string Format { get; set; }
         public string Text
         {
             get

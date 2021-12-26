@@ -1,11 +1,11 @@
-﻿namespace Richx
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Richx
 {
-    public record RichStyle : ICellStyle, IContentStyle
+    public interface ICellStyle
     {
-        public static readonly RichStyle Default = new();
-
-        public RichStyle() { }
-
         public bool IsHeadCell { get; set; }
 
         public IArgbColor BackgroundColor { get; set; }
@@ -20,7 +20,5 @@
         public bool? BorderBottom { get; set; }
         public bool? BorderLeft { get; set; }
         public bool? BorderRight { get; set; }
-
-        public string Format { get; set; }
     }
 }
