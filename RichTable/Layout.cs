@@ -20,8 +20,8 @@ namespace Richx
             return this;
         }
 
-        public static Layout Vertical(IEnumerable<object> objects) => VerticalAny(objects.OfType<object>().ToArray());
-        public static Layout Vertical<T>(IEnumerable<T> objects) => VerticalAny(objects.OfType<object>().ToArray());
+        public static Layout Vertical(IEnumerable<object> objects) => VerticalAny(objects.Cast<object>().ToArray());
+        public static Layout Vertical<T>(IEnumerable<T> objects) => VerticalAny(objects.Cast<object>().ToArray());
 
         public static Layout VerticalAny(params object[] objects)
         {
@@ -34,8 +34,8 @@ namespace Richx
             };
         }
 
-        public static Layout Horizontal(IEnumerable<object> objects) => HorizontalAny(objects.OfType<object>().ToArray());
-        public static Layout Horizontal<T>(IEnumerable<T> objects) => HorizontalAny(objects.OfType<object>().ToArray());
+        public static Layout Horizontal(IEnumerable<object> objects) => HorizontalAny(objects.Cast<object>().ToArray());
+        public static Layout Horizontal<T>(IEnumerable<T> objects) => HorizontalAny(objects.Cast<object>().ToArray());
 
         public static Layout HorizontalAny(params object[] objects)
         {
