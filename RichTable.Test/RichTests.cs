@@ -63,10 +63,9 @@ namespace Richx.Test
             }
 
             var htmlTable = new HtmlTable(table);
-            htmlTable.Style += "width:100%";
             var html = htmlTable.ToHtml();
 
-            Assert.Equal(@"<table class=""table"">
+            Assert.Equal(@"<table class=""table"" width=""100%"">
 <tbody>
 <tr><td rowspan=""2"">00<br/>10</td><td>01</td><td>02</td><td>03</td><td>04</td><td></td></tr>
 <tr><td rowspan=""2"">11<br/>21</td><td>12</td><td>13</td><td>14</td><td></td></tr>

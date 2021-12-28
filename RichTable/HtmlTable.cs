@@ -11,13 +11,31 @@ namespace Richx
     {
         public RichTable Table { get; }
         public string Class { get; set; }
-        public string Style { get; set; }
+        public string PropsString { get; set; }
+        public string StyleString { get; set; }
 
-        public HtmlTable(RichTable table, string @class = "table", string style = "border-collapse:collapse;")
+        public static readonly Dictionary<string, string> PropsDefault = new();
+        public static readonly Dictionary<string, string> StyleDefault = new()
         {
+            ["border-collapse"] = "collapse",
+        };
+
+        public HtmlTable(RichTable table, string @class = "table", Dictionary<string, string> props = null, Dictionary<string, string> style = null)
+        {
+            props ??= new();
+            var sb_props = new StringBuilder();
+            if (!props.ContainsKey("width")) props.Add("width", "100%");
+            foreach (var pair in props) sb_props.Append($" {pair.Key.For(StringFlow.HtmlEncode)}=\"{pair.Value.For(StringFlow.HtmlEncode)}\"");
+
+            style ??= new();
+            var sb_style = new StringBuilder();
+            if (!style.ContainsKey("border-collapse")) style.Add("border-collapse", "collapse");
+            foreach (var pair in style) sb_style.Append($"{pair.Key.For(StringFlow.HtmlEncode)}:{pair.Value.For(StringFlow.HtmlEncode)};");
+
             Table = table;
             Class = @class;
-            Style = style;
+            PropsString = sb_props.ToString();
+            StyleString = sb_style.ToString();
         }
 
         private static string Props(params string[] props)
@@ -59,7 +77,12 @@ namespace Richx
         public string ToHtml()
         {
             var sb = new StringBuilder();
-            sb.AppendLine($@"<table class=""{Class}"" style=""{Style}"">");
+            sb.Append("<table");
+            if (!Class.IsNullOrWhiteSpace()) sb.Append($@" class=""{Class}""");
+            if (!PropsString.IsNullOrWhiteSpace()) sb.Append(PropsString);
+            if (!StyleString.IsNullOrWhiteSpace()) sb.Append($@" style=""{StyleString}""");
+            sb.AppendLine(">");
+
             sb.AppendLine(@"<tbody>");
 
             foreach (var row in Table.Rows)
