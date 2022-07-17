@@ -46,5 +46,30 @@ namespace Richx
             }
             else return value?.ToString();
         }
+
+        public RichStyle Border(bool? value)
+        {
+            BorderTop = value;
+            BorderBottom = value;
+            BorderLeft = value;
+            BorderRight = value;
+            return this;
+        }
+
+        public RichStyle Center(bool value)
+        {
+            if (value)
+            {
+                TextAlign = RichTextAlignment.Center;
+                VerticalAlign = RichVerticalAlignment.Middle;
+            }
+            else
+            {
+                TextAlign = RichTextAlignment.Preserve;
+                VerticalAlign = RichVerticalAlignment.Preserve;
+            }
+            return this;
+        }
+
     }
 }

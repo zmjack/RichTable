@@ -51,6 +51,8 @@ namespace Richx
                     //TODO: optimizable
                     Table.UndoMerge(manualMergeFrom.Value);
                     Table[manualMergeFrom.Value, Cursor].Merge();
+
+                    ExtendBound(Cursor);
                     Cursor = GetNextCursor();
                     continue;
                 }
@@ -59,8 +61,15 @@ namespace Richx
                 {
                     var subMasking = new Masking(Table, this, Cursor, afterCursor, style);
                     subMasking.Paint(subLayout);
+
+                    if (subLayout.Objects.Length == 1)
+                    {
+                        singleCells.Add(Cursor);
+                        manualMergeFrom = Cursor;
+                    }
+                    else manualMergeFrom = null;
+
                     ExtendBound(subMasking.Start, subMasking.End);
-                    manualMergeFrom = null;
                     Cursor = subMasking.GetAfterCursor();
 
                     switch (afterCursor)
@@ -73,9 +82,11 @@ namespace Richx
                 {
                     Table[Cursor].Style = style;
                     Table[Cursor].Value = obj;
-                    ExtendBound(Cursor);
+
                     singleCells.Add(Cursor);
                     manualMergeFrom = Cursor;
+
+                    ExtendBound(Cursor);
                     Cursor = GetNextCursor();
                 }
             }
