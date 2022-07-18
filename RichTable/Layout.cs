@@ -11,6 +11,7 @@ namespace Richx
         public bool LeftToRight { get; set; }
         public bool TopToBottom { get; set; }
         public object[] Objects { get; set; }
+        public bool Single { get; set; }
 
         public static readonly CellSpan Span = new();
 
@@ -20,7 +21,17 @@ namespace Richx
             return this;
         }
 
-        public static Layout Const(object obj) => HorizontalAny(new[] { obj });
+        public static Layout Const(object obj)
+        {
+            return new Layout
+            {
+                Style = RichStyle.Default,
+                LeftToRight = true,
+                TopToBottom = false,
+                Objects = new[] { obj },
+                Single = true,
+            };
+        }
 
         public static Layout Vertical(IEnumerable<object> objects) => VerticalAny(objects.Cast<object>().ToArray());
         public static Layout Vertical<T>(IEnumerable<T> objects) => VerticalAny(objects.Cast<object>().ToArray());

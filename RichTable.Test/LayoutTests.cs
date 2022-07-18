@@ -66,7 +66,8 @@ namespace RichTable.Test
                     Layout.Const("Center").WithStyle(Table.Style.Title),
                     Layout.HorizontalAny(1, 2, 3, 4, 5),
                     Layout.HorizontalAny("0 Words", Layout.Span, Layout.HorizontalAny(3, 4, 5)),
-                    Layout.HorizontalAny(Layout.HorizontalAny("0 Words", Layout.Span), Layout.HorizontalAny(3, 4, 5))
+                    Layout.HorizontalAny(Layout.HorizontalAny("0 Words", Layout.Span), Layout.HorizontalAny(3, 4, 5)),
+                    Layout.Vertical(new[] { 1 })
                 );
 
             var table = new Richx.RichTable();

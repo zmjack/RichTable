@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Richx
+﻿namespace Richx
 {
     public class RichCell
     {

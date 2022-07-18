@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Richx
+﻿namespace Richx
 {
     public interface IContentStyle
     {

@@ -62,21 +62,26 @@ namespace Richx
                     var subMasking = new Masking(Table, this, Cursor, afterCursor, style);
                     subMasking.Paint(subLayout);
 
-                    if (subLayout.Objects.Length == 1)
+                    if (subLayout.Single)
                     {
                         singleCells.Add(Cursor);
                         manualMergeFrom = Cursor;
+                        ExtendBound(Cursor);
+                        Cursor = GetNextCursor();
                     }
-                    else manualMergeFrom = null;
-
-                    ExtendBound(subMasking.Start, subMasking.End);
-                    Cursor = subMasking.GetAfterCursor();
-
-                    switch (afterCursor)
+                    else
                     {
-                        case AfterCursor.AsideTopRight: mergeTo = subMasking.End.Row; break;
-                        case AfterCursor.UnderBottomLeft: mergeTo = subMasking.End.Col; break;
+                        manualMergeFrom = null;
+                        ExtendBound(subMasking.Start, subMasking.End);
+                        Cursor = subMasking.GetAfterCursor();
+
+                        switch (afterCursor)
+                        {
+                            case AfterCursor.AsideTopRight: mergeTo = subMasking.End.Row; break;
+                            case AfterCursor.UnderBottomLeft: mergeTo = subMasking.End.Col; break;
+                        }
                     }
+
                 }
                 else
                 {
@@ -85,7 +90,6 @@ namespace Richx
 
                     singleCells.Add(Cursor);
                     manualMergeFrom = Cursor;
-
                     ExtendBound(Cursor);
                     Cursor = GetNextCursor();
                 }
