@@ -93,7 +93,7 @@ namespace Richx
                     //TODO: Auto calculate width
                     var cellWidth = cell.Comment.GetPureLines().For(lines =>
                     {
-                        if (lines.Any()) return 10 + lines.Max(x => (cell.Style.FontSize ?? 12) * x.Length);
+                        if (lines.Any()) return 10 + lines.Max(x => (cell.Style.FontSize ?? 12) * x.GetLengthA());
                         else return 10;
                     });
 
