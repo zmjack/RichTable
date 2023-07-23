@@ -30,12 +30,12 @@ namespace Richx
             var afterCursor = layout.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
             var style = layout.Style == RichStyle.Default ? DefaultStyle : layout.Style;
 
-            Cursor GetNextCursor()
+            Cursor GetNextCursor(int offset = 1)
             {
                 switch (afterCursor)
                 {
-                    case AfterCursor.AsideTopRight: return (Cursor.Row, Cursor.Col + 1);
-                    case AfterCursor.UnderBottomLeft: return (Cursor.Row + 1, Cursor.Col);
+                    case AfterCursor.AsideTopRight: return (Cursor.Row, Cursor.Col + offset);
+                    case AfterCursor.UnderBottomLeft: return (Cursor.Row + offset, Cursor.Col);
                     default: throw new NotImplementedException();
                 }
             }
@@ -46,14 +46,15 @@ namespace Richx
 
             foreach (var obj in layout.Objects)
             {
-                if (manualMergeFrom is not null && obj is Layout.CellSpan)
+                if (manualMergeFrom is not null && obj is Layout.CellSpan cellSpan)
                 {
                     //TODO: optimizable
                     Table.UndoMerge(manualMergeFrom.Value);
-                    Table[manualMergeFrom.Value, Cursor].Merge();
+                    var mCursor = cellSpan.Span == 1 ? Cursor : GetNextCursor(cellSpan.Span - 1);
+                    Table[manualMergeFrom.Value, mCursor].Merge();
 
                     ExtendBound(Cursor);
-                    Cursor = GetNextCursor();
+                    Cursor = GetNextCursor(cellSpan.Span);
                     continue;
                 }
 

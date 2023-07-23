@@ -5,7 +5,16 @@ namespace Richx
 {
     public class Layout
     {
-        public class CellSpan { }
+        public class CellSpan
+        {
+            public static readonly CellSpan Single = new(1);
+            public int Span { get; set; }
+
+            public CellSpan(int span)
+            {
+                Span = span;
+            }
+        }
 
         public RichStyle Style { get; set; }
         public bool LeftToRight { get; set; }
@@ -13,7 +22,8 @@ namespace Richx
         public object[] Objects { get; set; }
         public bool Single { get; set; }
 
-        public static readonly CellSpan Span = new();
+        public static CellSpan Span => CellSpan.Single;
+        public static CellSpan Spans(int span) => new(span);
 
         public Layout WithStyle(RichStyle style)
         {

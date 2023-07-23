@@ -11,7 +11,7 @@ namespace RichTable.Test
         {
             var layout =
                 Layout.Vertical(
-                    Layout.HorizontalAny("Book", "Chapter", Layout.Span, Layout.Span, "Words").WithStyle(Table.Style.Title),
+                    Layout.HorizontalAny("Book", "Chapter", Layout.Spans(2), "Words").WithStyle(Table.Style.Title),
                     Layout.HorizontalAny("Book1",
                         Layout.Vertical(
 
@@ -40,10 +40,10 @@ namespace RichTable.Test
                                         )
                                     ).WithStyle(Table.Style.Chapter2)
                                 ),
-                                Layout.HorizontalAny("Total Words", Layout.Span, Layout.Span, 4066)
+                                Layout.HorizontalAny("Total Words", Layout.Spans(2), 4066)
                             ).WithStyle(Table.Style.Chapter1),
 
-                            Layout.HorizontalAny("12132 Words", Layout.Span, Layout.Span, Layout.Span)
+                            Layout.HorizontalAny("12132 Words", Layout.Spans(3))
                         )
                     ).WithStyle(Table.Style.Book)
                 ).WithStyle(Table.Style.Base);
