@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,6 +37,7 @@ namespace Richx
         public static CellSpan Span => CellSpan.Single;
         public static CellSpan Spans(int span) => new(span);
 
+        [Obsolete]
         public Layout WithStyle(RichStyle style)
         {
             Style = style;
@@ -54,10 +56,14 @@ namespace Richx
             };
         }
 
+        [Obsolete]
         public static Layout Vertical(IEnumerable<object> objects) => VerticalAny(objects.Cast<object>().ToArray());
+        [Obsolete]
         public static Layout Vertical<T>(IEnumerable<T> objects) => VerticalAny(objects.Cast<object>().ToArray());
+        [Obsolete]
         public static Layout Vertical<T>(params T[] objects) => VerticalAny(objects.Cast<object>().ToArray());
 
+        [Obsolete]
         public static Layout VerticalAny(params object[] objects)
         {
             return new Layout
@@ -69,10 +75,14 @@ namespace Richx
             };
         }
 
+        [Obsolete]
         public static Layout Horizontal(IEnumerable<object> objects) => HorizontalAny(objects.Cast<object>().ToArray());
+        [Obsolete]
         public static Layout Horizontal<T>(IEnumerable<T> objects) => HorizontalAny(objects.Cast<object>().ToArray());
+        [Obsolete]
         public static Layout Horizontal<T>(params T[] objects) => HorizontalAny(objects.Cast<object>().ToArray());
 
+        [Obsolete]
         public static Layout HorizontalAny(params object[] objects)
         {
             return new Layout
@@ -92,6 +102,23 @@ namespace Richx
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Objects.GetEnumerator();
+        }
+
+        public void Add(object value)
+        {
+            if (value is Layout || value is string)
+            {
+                _objectList.Add(value);
+            }
+            else if (value is IEnumerable enumerable)
+            {
+                var enumerator = enumerable.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    _objectList.Add(enumerator.Current);
+                }
+            }
+            else _objectList.Add(value);
         }
 
         public class Constant : Layout
@@ -116,15 +143,6 @@ namespace Richx
                 LeftToRight = true;
                 TopToBottom = false;
             }
-
-            public void Add(object value)
-            {
-                if (value is not Layout && value is IEnumerable<object> enumerable)
-                {
-                    _objectList.AddRange(enumerable);
-                }
-                else _objectList.Add(value);
-            }
         }
 
         public class Vert : Layout
@@ -135,15 +153,6 @@ namespace Richx
                 Style = style;
                 LeftToRight = false;
                 TopToBottom = true;
-            }
-
-            public void Add(object value)
-            {
-                if (value is not Layout && value is IEnumerable<object> enumerable)
-                {
-                    _objectList.AddRange(enumerable);
-                }
-                else _objectList.Add(value);
             }
         }
     }

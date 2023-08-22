@@ -1,4 +1,5 @@
-﻿using NStandard.Collections;
+﻿using NStandard;
+using NStandard.Collections;
 using RichTable.Test.Data;
 using Richx;
 using Xunit;
@@ -64,7 +65,7 @@ namespace RichTable.Test
             var layout =
                 new Layout.Vert(Table.Style.Base)
                 {
-                    new Layout.Hori(Table.Style.Title) { "Book", "Chapter", Layout.Spans(2), "Words" },
+                    new Layout.Hori(Table.Style.Title) { "Book", "Chapter", Layout.Spans(2), "Words",Layout.Span },
                     new Layout.Hori(Table.Style.Book)
                     {
                         "Book1",
@@ -82,8 +83,16 @@ namespace RichTable.Test
                                             "A-1",
                                             new Layout.Vert(Table.Style.Chapter3)
                                             {
-                                                new Layout.Hori(Table.Style.Words) { "A-1-1", Layout.Const(1011) },
-                                                new Layout.Hori(Table.Style.Words) { "A-1-2", Layout.Const(1012) },
+                                                new Layout.Hori(Table.Style.Words)
+                                                {
+                                                    "A-1-1",
+                                                    new Layout.Hori { 1011, 1012 },
+                                                },
+                                                new Layout.Hori(Table.Style.Words)
+                                                {
+                                                    "A-1-2",
+                                                    new Layout.Hori { 1011, 1012 },
+                                                },
                                             }
                                         }
                                     }
@@ -103,8 +112,16 @@ namespace RichTable.Test
                                             "B-1",
                                             new Layout.Vert(Table.Style.Chapter3)
                                             {
-                                                new Layout.Hori(Table.Style.Words) { "B-1-1", Layout.Const(2011) },
-                                                new Layout.Hori(Table.Style.Words) { "B-1-2", Layout.Const(2012) }
+                                                new Layout.Hori(Table.Style.Words)
+                                                {
+                                                    "B-1-1",
+                                                    new Layout.Hori { new double?[] { 1011, null } },
+                                                },
+                                                new Layout.Hori(Table.Style.Words)
+                                                {
+                                                    "B-1-2",
+                                                    new Layout.Hori { 1011, 1012 } ,
+                                                }
                                             }
                                         }
                                     }

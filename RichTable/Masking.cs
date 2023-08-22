@@ -32,12 +32,12 @@ namespace Richx
 
             Cursor GetNextCursor(int offset = 1)
             {
-                switch (afterCursor)
+                return afterCursor switch
                 {
-                    case AfterCursor.AsideTopRight: return (Cursor.Row, Cursor.Col + offset);
-                    case AfterCursor.UnderBottomLeft: return (Cursor.Row + offset, Cursor.Col);
-                    default: throw new NotImplementedException();
-                }
+                    AfterCursor.AsideTopRight => (Cursor)(Cursor.Row, Cursor.Col + offset),
+                    AfterCursor.UnderBottomLeft => (Cursor)(Cursor.Row + offset, Cursor.Col),
+                    _ => throw new NotImplementedException(),
+                };
             }
 
             var singleCells = new List<Cursor>();
