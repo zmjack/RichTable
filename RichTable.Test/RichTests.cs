@@ -19,23 +19,23 @@ namespace Richx.Test
         public void Test1()
         {
             var table = new RichTable();
-            table[(0, 0)].Then(cell => { cell.Value = "00\r\n10"; });
-            table[(0, 1)].Then(cell => { cell.Value = "01"; });
-            table[(0, 2)].Then(cell => { cell.Value = "02"; });
-            table[(0, 3)].Then(cell => { cell.Value = "03"; });
-            table[(0, 4)].Then(cell => { cell.Value = "04"; });
+            table[(0, 0)].Pipe(cell => { cell.Value = "00\r\n10"; });
+            table[(0, 1)].Pipe(cell => { cell.Value = "01"; });
+            table[(0, 2)].Pipe(cell => { cell.Value = "02"; });
+            table[(0, 3)].Pipe(cell => { cell.Value = "03"; });
+            table[(0, 4)].Pipe(cell => { cell.Value = "04"; });
 
-            table[(1, 0)].Then(cell => { cell.Value = ""; });
-            table[(1, 1)].Then(cell => { cell.Value = "11\r\n21"; });
-            table[(1, 2)].Then(cell => { cell.Value = "12"; });
-            table[(1, 3)].Then(cell => { cell.Value = "13"; });
-            table[(1, 4)].Then(cell => { cell.Value = "14"; });
+            table[(1, 0)].Pipe(cell => { cell.Value = ""; });
+            table[(1, 1)].Pipe(cell => { cell.Value = "11\r\n21"; });
+            table[(1, 2)].Pipe(cell => { cell.Value = "12"; });
+            table[(1, 3)].Pipe(cell => { cell.Value = "13"; });
+            table[(1, 4)].Pipe(cell => { cell.Value = "14"; });
 
-            table[(2, 0)].Then(cell => { cell.Value = "20"; });
-            table[(2, 1)].Then(cell => { cell.Value = "11\r\n21"; });
-            table[(2, 2)].Then(cell => { cell.Value = "22"; });
-            table[(2, 3)].Then(cell => { cell.Value = "23"; });
-            table[(2, 4)].Then(cell => { cell.Value = "24"; });
+            table[(2, 0)].Pipe(cell => { cell.Value = "20"; });
+            table[(2, 1)].Pipe(cell => { cell.Value = "11\r\n21"; });
+            table[(2, 2)].Pipe(cell => { cell.Value = "22"; });
+            table[(2, 3)].Pipe(cell => { cell.Value = "23"; });
+            table[(2, 4)].Pipe(cell => { cell.Value = "24"; });
 
             table[(0, 0), (1, 0)].Merge();
             table[(1, 1), (2, 4)].SmartMerge(0, 1, 2, 3);
@@ -76,39 +76,6 @@ namespace Richx.Test
 </tbody>
 </table>
 ", SimplifyHtml(html));
-        }
-
-        class CA
-        {
-            public int Prev { get; set; }
-            public int Value { get; set; }
-        }
-
-        [Fact]
-        public void Test2()
-        {
-            var table = new RichTable();
-            using var brush = table.BeginBrush();
-
-            var rule = new DataRule<CA>(2, 0, x =>
-            {
-                if (x[-1].Prev > 0) x.Current.Value = x[-1].Value;
-            });
-            CA[] models = new[]
-            {
-                new CA { Value = 1 },
-                new CA { Prev = 1, Value = 2 },
-                new CA { Value = 3 },
-                new CA { Value = 4 },
-                new CA { Value = 5 },
-            };
-
-            rule.Apply(models);
-            brush.PrintLine(PrintDirection.Vertical, models, x => new object[] { x.Prev, x.Value });
-            brush.PrintLine(PrintDirection.Horizontal, models, x => new object[] { x.Prev, x.Value });
-
-            var html = new HtmlTable(table).ToHtml();
-            var s = SimplifyHtml(html);
         }
 
     }

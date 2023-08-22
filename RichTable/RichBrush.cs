@@ -133,10 +133,10 @@ namespace Richx
             if (models is null) return this;
             return Print(PrintDirection.Horizontal, models, select);
         }
-        public RichBrush Print<T>(PrintDirection direction, T[] models, Func<T, object[]> select)
+        public RichBrush Print<T>(PrintDirection direction, T[] models, Func<T, object> select)
         {
             if (models is null) return this;
-            return Print(direction, models.Select(select).ToArray());
+            return Print(direction, models.Select(x => select(x)).ToArray());
         }
 
         public RichBrush PrintLine(int lineHeight = 1)
@@ -177,7 +177,7 @@ namespace Richx
         {
             if (models is null) return this;
 
-            var values = models.Select(select).ToArray();
+            var values = models.Select(x => select(x)).ToArray();
             Print(direction, values);
             if (direction == PrintDirection.Horizontal) Cursor.Row += values.Length;
             else if (direction == PrintDirection.Vertical) Cursor.Row += values.Any() ? values.Max(innerValues => innerValues?.Length ?? 0) : 0;

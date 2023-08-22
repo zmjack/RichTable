@@ -58,6 +58,74 @@ namespace RichTable.Test
         }
 
         [Fact]
+        public void ConstTest2()
+        {
+            var layout =
+                new Layout.Vert(Table.Style.Base)
+                {
+                    new Layout.Hori(Table.Style.Title) { "Book", "Chapter", Layout.Spans(2), "Words" },
+                    new Layout.Hori(Table.Style.Book)
+                    {
+                        "Book1",
+                        new Layout.Vert
+                        {
+                            new Layout.Vert(Table.Style.Chapter1)
+                            {
+                                new Layout.Hori
+                                {
+                                    "A",
+                                    new Layout.Vert(Table.Style.Chapter2)
+                                    {
+                                        new Layout.Hori
+                                        {
+                                            "A-1",
+                                            new Layout.Vert(Table.Style.Chapter3)
+                                            {
+                                                new Layout.Hori(Table.Style.Words) { "A-1-1", Layout.Const(1011) },
+                                                new Layout.Hori(Table.Style.Words) { "A-1-2", Layout.Const(1012) },
+                                            }
+                                        }
+                                    }
+                                },
+                                new Layout.Hori { "Total Words", Layout.Span, Layout.Span, 4066 }
+                            },
+
+                            new Layout.Vert(Table.Style.Chapter1)
+                            {
+                                new Layout.Hori
+                                {
+                                    "B",
+                                    new Layout.Vert(Table.Style.Chapter2)
+                                    {
+                                        new Layout.Hori
+                                        {
+                                            "B-1",
+                                            new Layout.Vert(Table.Style.Chapter3)
+                                            {
+                                                new Layout.Hori(Table.Style.Words) { "B-1-1", Layout.Const(2011) },
+                                                new Layout.Hori(Table.Style.Words) { "B-1-2", Layout.Const(2012) }
+                                            }
+                                        }
+                                    }
+                                },
+                                new Layout.Hori { "Total Words", Layout.Spans(2), 4066 }
+                            },
+
+                            new Layout.Hori { "12132 Words", Layout.Spans(3) }
+                        }
+                    }
+                };
+
+            var table = new Richx.RichTable();
+            var masking = table.CreateMasking("A2", AfterCursor.Default, RichStyle.Default);
+            masking.Paint(layout);
+            var html = new HtmlTable(table, props: new()
+            {
+                ["border"] = "1",
+            }).ToHtml();
+        }
+
+        [Fact]
         public void MergeTest()
         {
             var layout =

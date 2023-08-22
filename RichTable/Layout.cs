@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Richx
 {
-    public class Layout
+    public class Layout : IEnumerable<object>
     {
         public class CellSpan
         {
@@ -16,10 +17,20 @@ namespace Richx
             }
         }
 
+        private readonly List<object> _objectList = new();
+
         public RichStyle Style { get; set; }
         public bool LeftToRight { get; set; }
         public bool TopToBottom { get; set; }
-        public object[] Objects { get; set; }
+        public object[] Objects
+        {
+            get => _objectList.ToArray();
+            set
+            {
+                _objectList.Clear();
+                _objectList.AddRange(value);
+            }
+        }
         public bool Single { get; set; }
 
         public static CellSpan Span => CellSpan.Single;
@@ -71,6 +82,61 @@ namespace Richx
                 TopToBottom = false,
                 Objects = objects,
             };
+        }
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            return ((IEnumerable<object>)Objects).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Objects.GetEnumerator();
+        }
+
+        public class Constant : Layout
+        {
+            public Constant(object value) : this(value, RichStyle.Default) { }
+            public Constant(object value, RichStyle style)
+            {
+                Style = style;
+                LeftToRight = true;
+                TopToBottom = false;
+                Objects = new[] { value };
+                Single = true;
+            }
+        }
+
+        public class Hori : Layout
+        {
+            public Hori() : this(RichStyle.Default) { }
+            public Hori(RichStyle style)
+            {
+                Style = style;
+                LeftToRight = true;
+                TopToBottom = false;
+            }
+
+            public void Add(object value)
+            {
+                _objectList.Add(value);
+            }
+        }
+
+        public class Vert : Layout
+        {
+            public Vert() : this(RichStyle.Default) { }
+            public Vert(RichStyle style)
+            {
+                Style = style;
+                LeftToRight = false;
+                TopToBottom = true;
+            }
+
+            public void Add(object value)
+            {
+                _objectList.Add(value);
+            }
         }
     }
 }
