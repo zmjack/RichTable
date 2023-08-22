@@ -119,7 +119,11 @@ namespace Richx
 
             public void Add(object value)
             {
-                _objectList.Add(value);
+                if (value is not Layout && value is IEnumerable<object> enumerable)
+                {
+                    _objectList.AddRange(enumerable);
+                }
+                else _objectList.Add(value);
             }
         }
 
@@ -135,7 +139,11 @@ namespace Richx
 
             public void Add(object value)
             {
-                _objectList.Add(value);
+                if (value is not Layout && value is IEnumerable<object> enumerable)
+                {
+                    _objectList.AddRange(enumerable);
+                }
+                else _objectList.Add(value);
             }
         }
     }
