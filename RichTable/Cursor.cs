@@ -38,5 +38,16 @@ namespace Richx
 
         public static implicit operator Cursor(string cellName) => new(cellName);
         public static implicit operator Cursor((int row, int col) cell) => new(cell);
+
+        public override int GetHashCode()
+        {
+            return (Row << 16) | (Col & 0x0000FFFF);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Cursor other) return Row == other.Row && Col == other.Col;
+            return false;
+        }
     }
 }

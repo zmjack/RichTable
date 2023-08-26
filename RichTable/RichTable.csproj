@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
     <RootNamespace>Richx</RootNamespace>
     <LangVersion>preview</LangVersion>
-    <Version>0.3.4</Version>
+    <Version>0.4.0</Version>
     <Authors>zmjack</Authors>
     <Description>Powerful table with support for cell styles, intelligent merge, and more.</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>

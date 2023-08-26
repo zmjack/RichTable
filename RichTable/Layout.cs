@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Richx
 {
@@ -18,81 +17,29 @@ namespace Richx
             }
         }
 
-        private readonly List<object> _objectList = new();
+        public enum RenderDirection
+        {
+            LeftToRight,
+            TopToBottom,
+        }
 
-        public RichStyle Style { get; set; }
-        public bool LeftToRight { get; set; }
-        public bool TopToBottom { get; set; }
+        private static ArgumentException SingleCellCannotSetMultipleValues() => new("Single cell cannot set multiple values.");
+
+        private readonly List<object> _objectList = new();
         public object[] Objects
         {
             get => _objectList.ToArray();
-            set
+            protected set
             {
                 _objectList.Clear();
                 _objectList.AddRange(value);
             }
         }
-        public bool Single { get; set; }
 
-        public static CellSpan Span => CellSpan.Single;
-        public static CellSpan Spans(int span) => new(span);
-
-        [Obsolete]
-        public Layout WithStyle(RichStyle style)
-        {
-            Style = style;
-            return this;
-        }
-
-        public static Layout Const(object obj)
-        {
-            return new Layout
-            {
-                Style = RichStyle.Default,
-                LeftToRight = true,
-                TopToBottom = false,
-                Objects = new[] { obj },
-                Single = true,
-            };
-        }
-
-        [Obsolete]
-        public static Layout Vertical(IEnumerable<object> objects) => VerticalAny(objects.Cast<object>().ToArray());
-        [Obsolete]
-        public static Layout Vertical<T>(IEnumerable<T> objects) => VerticalAny(objects.Cast<object>().ToArray());
-        [Obsolete]
-        public static Layout Vertical<T>(params T[] objects) => VerticalAny(objects.Cast<object>().ToArray());
-
-        [Obsolete]
-        public static Layout VerticalAny(params object[] objects)
-        {
-            return new Layout
-            {
-                Style = RichStyle.Default,
-                LeftToRight = false,
-                TopToBottom = true,
-                Objects = objects,
-            };
-        }
-
-        [Obsolete]
-        public static Layout Horizontal(IEnumerable<object> objects) => HorizontalAny(objects.Cast<object>().ToArray());
-        [Obsolete]
-        public static Layout Horizontal<T>(IEnumerable<T> objects) => HorizontalAny(objects.Cast<object>().ToArray());
-        [Obsolete]
-        public static Layout Horizontal<T>(params T[] objects) => HorizontalAny(objects.Cast<object>().ToArray());
-
-        [Obsolete]
-        public static Layout HorizontalAny(params object[] objects)
-        {
-            return new Layout
-            {
-                Style = RichStyle.Default,
-                LeftToRight = true,
-                TopToBottom = false,
-                Objects = objects,
-            };
-        }
+        public RichStyle Style { get; protected set; }
+        public RenderDirection Direction { get; protected set; }
+        public bool Single => SpanValue > 0;
+        public int SpanValue { get; set; }
 
         public IEnumerator<object> GetEnumerator()
         {
@@ -108,10 +55,14 @@ namespace Richx
         {
             if (value is Layout || value is string)
             {
+                if (Single && _objectList.Count > 0) throw SingleCellCannotSetMultipleValues();
+
                 _objectList.Add(value);
             }
             else if (value is IEnumerable enumerable)
             {
+                if (Single) throw SingleCellCannotSetMultipleValues();
+
                 var enumerator = enumerable.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
@@ -121,16 +72,25 @@ namespace Richx
             else _objectList.Add(value);
         }
 
-        public class Constant : Layout
+        public class Cell : Layout
         {
-            public Constant(object value) : this(value, RichStyle.Default) { }
-            public Constant(object value, RichStyle style)
+            public Cell() : this(RichStyle.Default) { }
+            public Cell(RichStyle style)
             {
                 Style = style;
-                LeftToRight = true;
-                TopToBottom = false;
-                Objects = new[] { value };
-                Single = true;
+                Direction = RenderDirection.LeftToRight;
+                SpanValue = 1;
+            }
+        }
+
+        public class Span : Layout
+        {
+            public Span(int span) : this(span, RichStyle.Default) { }
+            public Span(int span, RichStyle style)
+            {
+                Style = style;
+                Direction = RenderDirection.LeftToRight;
+                SpanValue = span < 1 ? 1 : span;
             }
         }
 
@@ -140,8 +100,7 @@ namespace Richx
             public Hori(RichStyle style)
             {
                 Style = style;
-                LeftToRight = true;
-                TopToBottom = false;
+                Direction = RenderDirection.LeftToRight;
             }
         }
 
@@ -151,8 +110,7 @@ namespace Richx
             public Vert(RichStyle style)
             {
                 Style = style;
-                LeftToRight = false;
-                TopToBottom = true;
+                Direction = RenderDirection.TopToBottom;
             }
         }
     }

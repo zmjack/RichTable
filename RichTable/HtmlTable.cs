@@ -25,12 +25,12 @@ namespace Richx
             props ??= new();
             var sb_props = new StringBuilder();
             if (!props.ContainsKey("width")) props.Add("width", "100%");
-            foreach (var pair in props) sb_props.Append($" {pair.Key.For(StringFlow.HtmlEncode)}=\"{pair.Value.For(StringFlow.HtmlEncode)}\"");
+            foreach (var pair in props) sb_props.Append($" {pair.Key.Pipe(StringFlow.HtmlEncode)}=\"{pair.Value.Pipe(StringFlow.HtmlEncode)}\"");
 
             style ??= new();
             var sb_style = new StringBuilder();
             if (!style.ContainsKey("border-collapse")) style.Add("border-collapse", "collapse");
-            foreach (var pair in style) sb_style.Append($"{pair.Key.For(StringFlow.HtmlEncode)}:{pair.Value.For(StringFlow.HtmlEncode)};");
+            foreach (var pair in style) sb_style.Append($"{pair.Key.Pipe(StringFlow.HtmlEncode)}:{pair.Value.Pipe(StringFlow.HtmlEncode)};");
 
             Table = table;
             Class = @class;
@@ -42,8 +42,8 @@ namespace Richx
         {
             return props.Where(prop => !prop.IsNullOrWhiteSpace()).Select(prop => $" {prop}").Join("");
         }
-        private static string RowSpanProp(RichCell cell) => cell.RowSpan.For(span => span > 1 ? $@"rowspan=""{span}""" : "");
-        private static string ColSpanProp(RichCell cell) => cell.ColSpan.For(span => span > 1 ? $@"colspan=""{span}""" : "");
+        private static string RowSpanProp(RichCell cell) => cell.RowSpan.Pipe(span => span > 1 ? $@"rowspan=""{span}""" : "");
+        private static string ColSpanProp(RichCell cell) => cell.ColSpan.Pipe(span => span > 1 ? $@"colspan=""{span}""" : "");
 
         private static string StyleProp(RichCell cell)
         {
@@ -71,7 +71,7 @@ namespace Richx
 
         private string GetContentHtml(string str)
         {
-            return str?.NormalizeNewLine().Replace(" ", "\u00A0").For(StringFlow.HtmlEncode).Replace(Environment.NewLine, "<br/>");
+            return str?.NormalizeNewLine().Replace(" ", "\u00A0").Pipe(StringFlow.HtmlEncode).Replace(Environment.NewLine, "<br/>");
         }
 
         public string ToHtml()
@@ -91,7 +91,7 @@ namespace Richx
                 foreach (var cell in row.Cells.Where(x => !x.Ignored))
                 {
                     //TODO: Auto calculate width
-                    var cellWidth = cell.Comment.GetPureLines().For(lines =>
+                    var cellWidth = cell.Comment.GetPureLines().Pipe(lines =>
                     {
                         if (lines.Any()) return 10 + lines.Max(x => (cell.Style.FontSize ?? 12) * x.GetLengthA());
                         else return 10;

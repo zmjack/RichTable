@@ -27,7 +27,7 @@ namespace Richx
 
         public void Paint(Layout layout)
         {
-            var afterCursor = layout.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
+            var afterCursor = layout.Direction == Layout.RenderDirection.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
             var style = layout.Style == RichStyle.Default ? DefaultStyle : layout.Style;
 
             Cursor GetNextCursor(int offset = 1)
@@ -42,22 +42,9 @@ namespace Richx
 
             var singleCells = new List<Cursor>();
             int? mergeTo = null;
-            Cursor? manualMergeFrom = null;
 
             foreach (var obj in layout.Objects)
             {
-                if (manualMergeFrom is not null && obj is Layout.CellSpan cellSpan)
-                {
-                    //TODO: optimizable
-                    Table.UndoMerge(manualMergeFrom.Value);
-                    var mCursor = cellSpan.Span == 1 ? Cursor : GetNextCursor(cellSpan.Span - 1);
-                    Table[manualMergeFrom.Value, mCursor].Merge();
-
-                    ExtendBound(Cursor);
-                    Cursor = GetNextCursor(cellSpan.Span);
-                    continue;
-                }
-
                 if (obj is Layout subLayout)
                 {
                     var subMasking = new Masking(Table, this, Cursor, afterCursor, style);
@@ -66,20 +53,31 @@ namespace Richx
                     if (subLayout.Single)
                     {
                         singleCells.Add(Cursor);
-                        manualMergeFrom = Cursor;
                         ExtendBound(Cursor);
-                        Cursor = GetNextCursor();
+
+                        if (subLayout.SpanValue > 1)
+                        {
+                            var toCursor = GetNextCursor(subLayout.SpanValue - 1);
+                            Table[Cursor, toCursor].Merge();
+                            ExtendBound(toCursor);
+                            Cursor = GetNextCursor(subLayout.SpanValue);
+                        }
+                        else Cursor = GetNextCursor();
                     }
                     else
                     {
-                        manualMergeFrom = null;
                         ExtendBound(subMasking.Start, subMasking.End);
                         Cursor = subMasking.GetAfterCursor();
 
-                        switch (afterCursor)
+                        if (afterCursor == AfterCursor.UnderBottomLeft)
                         {
-                            case AfterCursor.AsideTopRight: mergeTo = subMasking.End.Row; break;
-                            case AfterCursor.UnderBottomLeft: mergeTo = subMasking.End.Col; break;
+                            var value = subMasking.End.Col;
+                            mergeTo = mergeTo.HasValue ? Math.Max(mergeTo.Value, value) : value;
+                        }
+                        else if (afterCursor == AfterCursor.AsideTopRight)
+                        {
+                            var value = subMasking.End.Row;
+                            mergeTo = mergeTo.HasValue ? Math.Max(mergeTo.Value, value) : value;
                         }
                     }
 
@@ -90,7 +88,6 @@ namespace Richx
                     Table[Cursor].Value = obj;
 
                     singleCells.Add(Cursor);
-                    manualMergeFrom = Cursor;
                     ExtendBound(Cursor);
                     Cursor = GetNextCursor();
                 }
@@ -139,14 +136,14 @@ namespace Richx
 
         private void ExtendBound(Cursor cursor)
         {
-            Start = (new[] { Start.Row, cursor.Row }.Min(), new[] { Start.Col, cursor.Col }.Min());
-            End = (new[] { End.Row, cursor.Row }.Max(), new[] { End.Col, cursor.Col }.Max());
+            Start = (Math.Min(Start.Row, cursor.Row), Math.Min(Start.Col, cursor.Col));
+            End = (Math.Max(End.Row, cursor.Row), Math.Max(End.Col, cursor.Col));
         }
 
         private void ExtendBound(Cursor start, Cursor end)
         {
-            Start = (new[] { Start.Row, start.Row }.Min(), new[] { Start.Col, start.Col }.Min());
-            End = (new[] { End.Row, end.Row }.Max(), new[] { End.Col, end.Col }.Max());
+            Start = (Math.Min(Start.Row, start.Row), Math.Min(Start.Col, start.Col));
+            End = (Math.Max(End.Row, end.Row), Math.Max(End.Col, end.Col));
         }
     }
 }

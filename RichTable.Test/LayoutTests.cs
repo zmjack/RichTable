@@ -12,60 +12,14 @@ namespace RichTable.Test
         public void ConstTest()
         {
             var layout =
-                Layout.Vertical(
-                    Layout.HorizontalAny("Book", "Chapter", Layout.Spans(2), "Words").WithStyle(Table.Style.Title),
-                    Layout.HorizontalAny("Book1",
-                        Layout.Vertical(
-
-                            Layout.Vertical(
-                                Layout.HorizontalAny("A",
-                                    Layout.Vertical(
-                                        Layout.HorizontalAny("A-1",
-                                            Layout.Vertical(
-                                                Layout.HorizontalAny("A-1-1", Layout.Const(1011).WithStyle(Table.Style.Words)),
-                                                Layout.HorizontalAny("A-1-2", Layout.Const(1012).WithStyle(Table.Style.Words))
-                                            ).WithStyle(Table.Style.Chapter3)
-                                        )
-                                    ).WithStyle(Table.Style.Chapter2)
-                                ),
-                                Layout.HorizontalAny("Total Words", Layout.Span, Layout.Span, 4066)
-                            ).WithStyle(Table.Style.Chapter1),
-
-                            Layout.Vertical(
-                                Layout.HorizontalAny("B",
-                                    Layout.Vertical(
-                                        Layout.HorizontalAny("B-1",
-                                            Layout.Vertical(
-                                                Layout.HorizontalAny("B-1-1", Layout.Const(2011).WithStyle(Table.Style.Words)),
-                                                Layout.HorizontalAny("B-1-2", Layout.Const(2012).WithStyle(Table.Style.Words))
-                                            ).WithStyle(Table.Style.Chapter3)
-                                        )
-                                    ).WithStyle(Table.Style.Chapter2)
-                                ),
-                                Layout.HorizontalAny("Total Words", Layout.Spans(2), 4066)
-                            ).WithStyle(Table.Style.Chapter1),
-
-                            Layout.HorizontalAny("12132 Words", Layout.Spans(3))
-                        )
-                    ).WithStyle(Table.Style.Book)
-                ).WithStyle(Table.Style.Base);
-
-            var table = new Richx.RichTable();
-            var masking = table.CreateMasking("A2", AfterCursor.Default, RichStyle.Default);
-            masking.Paint(layout);
-            var html = new HtmlTable(table, props: new()
-            {
-                ["border"] = "1",
-            }).ToHtml();
-        }
-
-        [Fact]
-        public void ConstTest2()
-        {
-            var layout =
                 new Layout.Vert(Table.Style.Base)
                 {
-                    new Layout.Hori(Table.Style.Title) { "Book", "Chapter", Layout.Spans(2), "Words",Layout.Span },
+                    new Layout.Hori(Table.Style.Title)
+                    {
+                        "Book",
+                        new Layout.Span(3) { "Chapter" },
+                        new Layout.Span(2) { "Words" },
+                    },
                     new Layout.Hori(Table.Style.Book)
                     {
                         "Book1",
@@ -97,7 +51,12 @@ namespace RichTable.Test
                                         }
                                     }
                                 },
-                                new Layout.Hori { "Total Words", Layout.Span, Layout.Span, 4066 }
+                                new Layout.Hori
+                                {
+                                    new Layout.Span(3) { "Total Words" },
+                                    2022,
+                                    2024,
+                                }
                             },
 
                             new Layout.Vert(Table.Style.Chapter1)
@@ -115,7 +74,7 @@ namespace RichTable.Test
                                                 new Layout.Hori(Table.Style.Words)
                                                 {
                                                     "B-1-1",
-                                                    new Layout.Hori { new double?[] { 1011, null } },
+                                                    new Layout.Hori { 1011, null },
                                                 },
                                                 new Layout.Hori(Table.Style.Words)
                                                 {
@@ -126,16 +85,29 @@ namespace RichTable.Test
                                         }
                                     }
                                 },
-                                new Layout.Hori { "Total Words", Layout.Spans(2), 4066 }
+                                new Layout.Hori
+                                {
+                                    new Layout.Span(3)
+                                    {
+                                        "Total Words"
+                                    },
+                                    2022,
+                                    1012,
+                                }
                             },
 
-                            new Layout.Hori { "12132 Words", Layout.Spans(3) }
+                            new Layout.Hori
+                            {
+                                new Layout.Span(3) { "Total Words" },
+                                4044,
+                                3036,
+                            }
                         }
                     }
                 };
 
             var table = new Richx.RichTable();
-            var masking = table.CreateMasking("A2", AfterCursor.Default, RichStyle.Default);
+            var masking = table.CreateMasking("A2");
             masking.Paint(layout);
             var html = new HtmlTable(table, props: new()
             {
@@ -144,21 +116,67 @@ namespace RichTable.Test
         }
 
         [Fact]
-        public void MergeTest()
+        public void HoriMergeTest()
         {
-            var layout =
-                Layout.VerticalAny(
-                    "Center",
-                    Layout.Const("Center").WithStyle(Table.Style.Title),
-                    Layout.HorizontalAny(1, 2, 3, 4, 5),
-                    Layout.HorizontalAny("0 Words", Layout.Span, Layout.HorizontalAny(3, 4, 5)),
-                    Layout.HorizontalAny(Layout.HorizontalAny("0 Words", Layout.Span), Layout.HorizontalAny(3, 4, 5)),
-                    Layout.Vertical(new[] { 1 })
-                );
-
             var table = new Richx.RichTable();
-            var masking = table.CreateMasking("A2", AfterCursor.Default, RichStyle.Default);
-            masking.Paint(layout);
+            var masking = table.CreateMasking("A2");
+            masking.Paint(new Layout.Vert
+            {
+                "Center",
+                //new Layout.Cell(Table.Style.Title) { "Center" },
+                new Layout.Hori { 1, 2, 3, 4, 5 },
+                new Layout.Hori
+                {
+                    new Layout.Span(2) { "0 Words" },
+                    new Layout.Hori { 3, 4, 5 },
+                },
+                new Layout.Hori
+                {
+                    new Layout.Hori
+                    {
+                        new Layout.Span(2) { "0 Words" },
+                        new Layout.Hori { 3, 4, 5 },
+                    }
+                },
+                new Layout.Vert
+                {
+                    1
+                }
+            });
+            var html = new HtmlTable(table, props: new()
+            {
+                ["border"] = "1",
+            }).ToHtml();
+        }
+
+        [Fact]
+        public void VertMergeTest()
+        {
+            var table = new Richx.RichTable();
+            var masking = table.CreateMasking("A2");
+            masking.Paint(new Layout.Hori
+            {
+                "Center",
+                //new Layout.Cell(Table.Style.Title) { "Center" },
+                new Layout.Vert { 1, 2, 3, 4, 5 },
+                new Layout.Vert
+                {
+                    new Layout.Span(2) { "0 Words" },
+                    new Layout.Vert { 3, 4, 5 },
+                },
+                new Layout.Vert
+                {
+                    new Layout.Vert
+                    {
+                        new Layout.Span(2) { "0 Words" },
+                        new Layout.Vert { 3, 4, 5 },
+                    }
+                },
+                new Layout.Hori
+                {
+                    1
+                }
+            });
             var html = new HtmlTable(table, props: new()
             {
                 ["border"] = "1",

@@ -28,6 +28,13 @@ namespace Richx
 
         public static bool operator ==(ArgbColor left, IArgbColor right) => left.ArgbValue == right.ArgbValue;
         public static bool operator !=(ArgbColor left, IArgbColor right) => left.ArgbValue != right.ArgbValue;
+
+        public override int GetHashCode() => (int)_value;
+        public override bool Equals(object obj)
+        {
+            if (obj is IArgbColor other) return ArgbValue == other.ArgbValue;
+            return false;
+        }
     }
 
 }

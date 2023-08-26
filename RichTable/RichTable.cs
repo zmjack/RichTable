@@ -52,6 +52,11 @@ namespace Richx
 
         public RichCell Cell(Cursor cursor) => Row(cursor.Row).Cell(cursor.Col);
 
+        public Masking CreateMasking(Cursor cursor)
+        {
+            return new Masking(this, null, cursor, AfterCursor.Default, RichStyle.Default);
+        }
+
         public Masking CreateMasking(Cursor cursor, AfterCursor afterCursor, RichStyle richStyle)
         {
             return new Masking(this, null, cursor, afterCursor, richStyle);
