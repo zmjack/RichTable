@@ -1,6 +1,4 @@
-﻿using NStandard;
-using NStandard.Collections;
-using RichTable.Test.Data;
+﻿using RichTable.Test.Data;
 using Richx;
 using Xunit;
 
