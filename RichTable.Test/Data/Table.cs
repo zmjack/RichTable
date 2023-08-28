@@ -20,11 +20,11 @@ namespace RichTable.Test.Data
                 TextAlign = RichTextAlignment.Center,
                 VerticalAlign = RichVerticalAlignment.Middle,
             };
-            public static readonly RichStyle Title = Base with { BackgroundColor = RgbColor.Create(0xFFFF00) };
-            public static readonly RichStyle Book = Base with { BackgroundColor = RgbColor.Create(0xDDEBF7) };
-            public static readonly RichStyle Chapter1 = Base with { BackgroundColor = RgbColor.Create(0xFCE4D6) };
-            public static readonly RichStyle Chapter2 = Base with { BackgroundColor = RgbColor.Create(0xEDEDED) };
-            public static readonly RichStyle Chapter3 = Base with { BackgroundColor = RgbColor.Create(0xFFF2CC) };
+            public static readonly RichStyle Title = Base with { BackgroundColor = new RgbColor(0xFFFF00) };
+            public static readonly RichStyle Book = Base with { BackgroundColor = new RgbColor(0xDDEBF7) };
+            public static readonly RichStyle Chapter1 = Base with { BackgroundColor = new RgbColor(0xFCE4D6) };
+            public static readonly RichStyle Chapter2 = Base with { BackgroundColor = new RgbColor(0xEDEDED) };
+            public static readonly RichStyle Chapter3 = Base with { BackgroundColor = new RgbColor(0xFFF2CC) };
             public static readonly RichStyle Words = Base with { Format = "#,##0" };
         }
     }

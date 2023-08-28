@@ -8,5 +8,6 @@
         byte Blue { get; set; }
         uint ArgbValue { get; }
         uint RgbValue { get; }
+        uint Value { get; }
     }
 }
