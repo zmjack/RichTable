@@ -35,7 +35,7 @@ namespace RichTable.Test
                                             "A-1",
                                             new Layout.Vert(Table.Style.Chapter3)
                                             {
-                                                new Layout.Hori(Table.Style.Words)
+                                                new Layout.Hori(Table.Style.Chapter1, Table.Style.Chapter2)
                                                 {
                                                     "A-1-1",
                                                     new Layout.Hori { 1011, 1012 },

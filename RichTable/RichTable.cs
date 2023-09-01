@@ -54,12 +54,12 @@ namespace Richx
 
         public Masking CreateMasking(Cursor cursor)
         {
-            return new Masking(this, null, cursor, AfterCursor.Default, RichStyle.Default);
+            return new Masking(this, null, cursor, AfterCursor.Default, Array.Empty<RichStyle>());
         }
 
-        public Masking CreateMasking(Cursor cursor, AfterCursor afterCursor, RichStyle richStyle)
+        public Masking CreateMasking(Cursor cursor, AfterCursor afterCursor, RichStyle[] parentStyles)
         {
-            return new Masking(this, null, cursor, afterCursor, richStyle);
+            return new Masking(this, null, cursor, afterCursor, parentStyles);
         }
 
         public RichBrush BeginBrush() => new(this, null, (0, 0));

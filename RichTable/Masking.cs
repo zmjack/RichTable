@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NStandard;
+using System;
 using System.Collections.Generic;
 
 namespace Richx
@@ -11,23 +12,24 @@ namespace Richx
         public Masking Parent { get; set; }
         public Cursor Start { get; private set; }
         public Cursor End { get; private set; }
-        public RichStyle DefaultStyle { get; private set; }
+        public RichStyle[] ParentStyles { get; private set; }
         public AfterCursor AfterCursor { get; private set; }
 
-        internal Masking(RichTable table, Masking parent, Cursor start, AfterCursor afterCursor, RichStyle defaultStyle)
+        internal Masking(RichTable table, Masking parent, Cursor start, AfterCursor afterCursor, RichStyle[] parentStyles)
         {
             Table = table;
             Parent = parent;
             Cursor = start;
             AfterCursor = afterCursor;
-            DefaultStyle = defaultStyle;
+            ParentStyles = parentStyles;
             Start = End = start;
         }
 
         public void Paint(Layout layout)
         {
             var afterCursor = layout.Direction == Layout.RenderDirection.LeftToRight ? AfterCursor.AsideTopRight : AfterCursor.UnderBottomLeft;
-            var style = layout.Style == RichStyle.Default ? DefaultStyle : layout.Style;
+            var styles = layout.Styles.Length == 0 ? ParentStyles : layout.Styles;
+            var styleLength = styles.Length;
 
             Cursor GetNextCursor(int offset = 1)
             {
@@ -42,11 +44,11 @@ namespace Richx
             var singleCells = new List<Cursor>();
             int? mergeTo = null;
 
-            foreach (var obj in layout.Objects)
+            foreach (var (index, obj) in layout.Objects.AsIndexValuePairs())
             {
                 if (obj is Layout subLayout)
                 {
-                    var subMasking = new Masking(Table, this, Cursor, afterCursor, style);
+                    var subMasking = new Masking(Table, this, Cursor, afterCursor, styles);
                     subMasking.Paint(subLayout);
 
                     if (subLayout.Single)
@@ -83,7 +85,10 @@ namespace Richx
                 }
                 else
                 {
-                    Table[Cursor].Style = style;
+                    if (styleLength > 0)
+                    {
+                        Table[Cursor].Style = styles[index % styleLength];
+                    }
                     Table[Cursor].Value = obj;
 
                     singleCells.Add(Cursor);

@@ -36,7 +36,7 @@ namespace Richx
             }
         }
 
-        public RichStyle Style { get; protected set; }
+        public RichStyle[] Styles { get; protected set; }
         public RenderDirection Direction { get; protected set; }
         public bool Single => SpanValue > 0;
         public int SpanValue { get; set; }
@@ -72,23 +72,11 @@ namespace Richx
             else _objectList.Add(value);
         }
 
-        public class Cell : Layout
-        {
-            public Cell() : this(RichStyle.Default) { }
-            public Cell(RichStyle style)
-            {
-                Style = style;
-                Direction = RenderDirection.LeftToRight;
-                SpanValue = 1;
-            }
-        }
-
         public class Span : Layout
         {
-            public Span(int span) : this(span, RichStyle.Default) { }
-            public Span(int span, RichStyle style)
+            public Span(int span = 1, params RichStyle[] styles)
             {
-                Style = style;
+                Styles = styles;
                 Direction = RenderDirection.LeftToRight;
                 SpanValue = span < 1 ? 1 : span;
             }
@@ -96,20 +84,18 @@ namespace Richx
 
         public class Hori : Layout
         {
-            public Hori() : this(RichStyle.Default) { }
-            public Hori(RichStyle style)
+            public Hori(params RichStyle[] styles)
             {
-                Style = style;
+                Styles = styles;
                 Direction = RenderDirection.LeftToRight;
             }
         }
 
         public class Vert : Layout
         {
-            public Vert() : this(RichStyle.Default) { }
-            public Vert(RichStyle style)
+            public Vert(params RichStyle[] styles)
             {
-                Style = style;
+                Styles = styles;
                 Direction = RenderDirection.TopToBottom;
             }
         }
