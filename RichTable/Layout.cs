@@ -74,7 +74,14 @@ namespace Richx
 
         public class Span : Layout
         {
-            public Span(int span = 1, params RichStyle[] styles)
+            public Span(params RichStyle[] styles)
+            {
+                Styles = styles;
+                Direction = RenderDirection.LeftToRight;
+                SpanValue = 1;
+            }
+
+            public Span(int span, params RichStyle[] styles)
             {
                 Styles = styles;
                 Direction = RenderDirection.LeftToRight;
